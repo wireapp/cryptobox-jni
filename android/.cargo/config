@@ -1,0 +1,6 @@
+[target.arm-linux-androideabi]
+linker = "arm-linux-androideabi-gcc"
+ar     = "arm-linux-androideabi-ar"
+
+[target.arm-linux-androideabi.sodium]
+rustc-flags = "-L ../../libsodium-android-armv7-a/lib -l sodium"

@@ -1,0 +1,9 @@
+android/jni/*.so
+android/jni/include
+bin/
+gen/
+libs/
+obj/
+build/
+dist/
+local.properties
