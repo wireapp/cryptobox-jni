@@ -37,7 +37,7 @@ final public class CryptoSession {
         }
     }
 
-    public byte[] getRemoteFingerprint() throws CryptoException {
+    public byte[] getRemoteFingerprint() {
         synchronized (lock) {
             errorIfClosed();
             return jniGetRemoteFingerprint(this.ptr);

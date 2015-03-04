@@ -29,7 +29,7 @@ final public class CryptoBox {
         }
     }
 
-    public byte[] getLocalFingerprint() throws CryptoException {
+    public byte[] getLocalFingerprint() {
         synchronized (lock) {
             errorIfClosed();
             return jniGetLocalFingerprint(this.ptr);
