@@ -29,6 +29,13 @@ final public class CryptoBox {
         }
     }
 
+    public byte[] getLocalFingerprint() throws CryptoException {
+        synchronized (lock) {
+            errorIfClosed();
+            return jniGetLocalFingerprint(this.ptr);
+        }
+    }
+
     public PreKey[] newPreKeys(int start, int num) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -132,6 +139,7 @@ final public class CryptoBox {
     private native static CryptoBox jniOpen(String dir) throws CryptoException;
     private native static void jniClose(long ptr);
     private native static PreKey[] jniNewPreKeys(long ptr, int start, int num) throws CryptoException;
+    private native static byte[] jniGetLocalFingerprint(long ptr);
     private native static CryptoSession jniInitSessionFromPreKey(long ptr, String sid, byte[] prekey) throws CryptoException;
     private native static SessionMessage jniInitSessionFromMessage(long ptr, String sid, byte[] message) throws CryptoException;
     private native static CryptoSession jniGetSession(long ptr, String sid) throws CryptoException;

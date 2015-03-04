@@ -37,13 +37,6 @@ final public class CryptoSession {
         }
     }
 
-    public byte[] getLocalFingerprint() throws CryptoException {
-        synchronized (lock) {
-            errorIfClosed();
-            return jniGetLocalFingerprint(this.ptr);
-        }
-    }
-
     public byte[] getRemoteFingerprint() throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -80,7 +73,6 @@ final public class CryptoSession {
     private native static void   jniSave(long ptr) throws CryptoException;
     private native static byte[] jniEncrypt(long ptr, byte[] plaintext) throws CryptoException;
     private native static byte[] jniDecrypt(long ptr, byte[] ciphertext) throws CryptoException;
-    private native static byte[] jniGetLocalFingerprint(long ptr);
     private native static byte[] jniGetRemoteFingerprint(long ptr);
     private native static void   jniClose(long ptr);
 }

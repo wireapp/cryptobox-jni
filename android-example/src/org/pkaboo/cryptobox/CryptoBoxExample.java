@@ -14,11 +14,9 @@ public class CryptoBoxExample extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Charset       utf8     = Charset.forName("UTF-8");
-        CryptoBox     aliceBox = null;
-        CryptoBox     bobBox   = null;
-        CryptoSession alice    = null;
-        CryptoSession bob      = null;
+        Charset   utf8     = Charset.forName("UTF-8");
+        CryptoBox aliceBox = null;
+        CryptoBox bobBox   = null;
         try {
             String aliceDir = getDir("cryptobox-alice", MODE_PRIVATE).getAbsolutePath();
             aliceBox = CryptoBox.open(aliceDir);
@@ -27,13 +25,15 @@ public class CryptoBoxExample extends Activity {
             bobBox = CryptoBox.open(bobDir);
             PreKey[] pks = bobBox.newPreKeys(0, 10);
 
-            alice = aliceBox.initSessionFromPreKey("alice", pks[0]);
+            CryptoSession alice   = aliceBox.initSessionFromPreKey("alice", pks[0]);
             byte[] helloBobCipher = alice.encrypt("Hello Bøb!".getBytes(utf8));
+
             Log.v(TAG, "Encrypted message: " + new String(helloBobCipher));
 
-            SessionMessage smgs = bobBox.initSessionFromMessage("bob", helloBobCipher);
-            bob = smgs.getSession();
+            SessionMessage smgs  = bobBox.initSessionFromMessage("bob", helloBobCipher);
+            CryptoSession bob    = smgs.getSession();
             byte[] helloBobPlain = smgs.getMessage();
+
             Log.v(TAG, "Decrypted message: " + new String(helloBobPlain, utf8));
 
             alice.save();

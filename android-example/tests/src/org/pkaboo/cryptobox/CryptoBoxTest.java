@@ -66,8 +66,8 @@ public class CryptoBoxTest extends TestCase {
             assertTrue(aliceBox.getSession(alice.id) == alice);
             assertTrue(bobBox.getSession(bob.id) == bob);
 
-            assertTrue("Fingerprint mismatch", Arrays.equals(alice.getLocalFingerprint(), bob.getRemoteFingerprint()));
-            assertTrue("Fingerprint mismatch", Arrays.equals(bob.getLocalFingerprint(), alice.getRemoteFingerprint()));
+            assertTrue("Fingerprint mismatch", Arrays.equals(aliceBox.getLocalFingerprint(), bob.getRemoteFingerprint()));
+            assertTrue("Fingerprint mismatch", Arrays.equals(bobBox.getLocalFingerprint(), alice.getRemoteFingerprint()));
         } catch (CryptoException ex) {
             fail(ex.toString());
         }

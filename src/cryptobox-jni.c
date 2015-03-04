@@ -155,6 +155,16 @@ cboxjni_new_prekeys(JNIEnv * j_env, jclass j_class, jlong j_ptr, jint j_start, j
     return bundles;
 }
 
+JNIEXPORT jbyteArray JNICALL
+cboxjni_local_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
+    CBox * cbox = (CBox *) (intptr_t) j_ptr;
+
+    CBoxVec * fp = NULL;
+    cbox_fingerprint_local(cbox, &fp);
+
+    return cboxjni_vec2arr(j_env, fp);
+}
+
 JNIEXPORT jobject JNICALL
 cboxjni_init_from_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid, jbyteArray j_prekey) {
     #ifdef __ANDROID__
@@ -340,16 +350,6 @@ cboxjni_session_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 }
 
 JNIEXPORT jbyteArray JNICALL
-cboxjni_local_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
-    CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
-
-    CBoxVec * fp = NULL;
-    cbox_fingerprint_local(csess, &fp);
-
-    return cboxjni_vec2arr(j_env, fp);
-}
-
-JNIEXPORT jbyteArray JNICALL
 cboxjni_remote_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
 
@@ -365,6 +365,7 @@ static JNINativeMethod cboxjni_box_methods[] = {
     { "jniOpen"                  , "(Ljava/lang/String;)Lorg/pkaboo/cryptobox/CryptoBox;"         , (void *) cboxjni_open              },
     { "jniClose"                 , "(J)V"                                                         , (void *) cboxjni_close             },
     { "jniNewPreKeys"            , "(JII)[Lorg/pkaboo/cryptobox/PreKey;"                          , (void *) cboxjni_new_prekeys       },
+    { "jniGetLocalFingerprint"   , "(J)[B"                                                        , (void *) cboxjni_local_fingerprint },
     { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey  },
     { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message },
     { "jniGetSession"            , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_get       }
@@ -375,7 +376,6 @@ static JNINativeMethod cboxjni_sess_methods[] = {
     { "jniDecrypt"              , "(J[B)[B" , (void *) cboxjni_session_decrypt    },
     { "jniSave"                 , "(J)V"    , (void *) cboxjni_session_save       },
     { "jniClose"                , "(J)V"    , (void *) cboxjni_session_close      },
-    { "jniGetLocalFingerprint"  , "(J)[B"   , (void *) cboxjni_local_fingerprint  },
     { "jniGetRemoteFingerprint" , "(J)[B"   , (void *) cboxjni_remote_fingerprint }
 };
 
