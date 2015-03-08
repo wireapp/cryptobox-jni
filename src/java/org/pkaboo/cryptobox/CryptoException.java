@@ -33,15 +33,69 @@ final public class CryptoException extends Exception {
     }
 
     public enum Code {
+        /** A requested session was not found. */
         NO_SESSION,
+
+        /** The remote identity of a session changed.
+         *
+         * <p>Usually the user should be informed and the session reinitialised.
+         * If the remote fingerprint was previously verified, it will need to be
+         * verified anew in order to exclude any potential MITM.</p>
+         */
         REMOTE_IDENTITY_CHANGED,
+
+        /** The signature of a decrypted message is invalid.
+         *
+         * <p>The message being decrypted is incomplete or has otherwise been
+         * tampered with.</p>
+         */
         INVALID_SIGNATURE,
+
+        /** A message is invalid.
+         *
+         * <p>The message being decrypted is in some way invalid and cannot
+         * be understood.</p>
+         */
         INVALID_MESSAGE,
+
+        /** A message is a duplicate.
+         *
+         * <p>The message being decrypted is a duplicate of a message that has
+         * previously been decrypted with the same session. The message can usually
+         * be safely discarded.</p>
+         */
         DUPLICATE_MESSAGE,
+
+        /** A message is too recent.
+         *
+         * <p>There is an unreasonably large gap between the last decrypted
+         * message and the message being decrypted, i.e. there are too many
+         * intermediate messages missing.</p>
+         */
         TOO_DISTANT_FUTURE,
+
+        /** A message is too old.
+         *
+         * <p>The message being decrypted is unreasonably old and cannot
+         * be decrypted any longer due to the key material no longer being available.</p>
+         */
         OUTDATED_MESSAGE,
+
+        /** A message or key could not be decoded.
+         *
+         * <p>The message or key being decoded is either malformed or
+         * otherwise encoded in a way that it cannot be processed.</p>
+         */
         DECODE_ERROR,
+
+        /** An internal storage error occurred.
+         *
+         * <p>An error occurred while loading or persisting key material.
+         * The operation may be retried a limited number of times.</p>
+         */
         STORAGE_ERROR,
+
+        /** An unspecified error occurred. */
         UNKNOWN_ERROR
     }
 }

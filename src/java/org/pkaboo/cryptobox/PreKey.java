@@ -5,6 +5,10 @@
 
 package org.pkaboo.cryptobox;
 
+/**
+ * A <tt>PreKey</tt> contains all the necessary public key material
+ * for a remote peer to initiate a session with the owner of the prekey.
+ */
 final public class PreKey {
     public final int id;
     public final byte[] data;

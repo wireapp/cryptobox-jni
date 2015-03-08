@@ -7,6 +7,21 @@ package org.pkaboo.cryptobox;
 
 import java.util.HashMap;
 
+/**
+ * A <tt>CryptoBox</tt> is an opaque container of all the necessary
+ * key material of single needed for exchanging ent-to-end encrypted
+ * messages with peers for a single, logical client or device.
+ *
+ * <p>Every cryptographic session with a peer is represented by
+ * a {@link CryptoSession}. These sessions are pooled by a <tt>CryptoBox</tt>,
+ * i.e. if a session with the same session ID is requested multiple times,
+ * the same instance is returned.
+ * </p>
+ *
+ * <p>A <tt>CryptoBox</tt> is thread-safe.</p>
+ *
+ * @see CryptoSession
+ */
 final public class CryptoBox {
     static {
         System.loadLibrary("cryptobox");
@@ -23,12 +38,24 @@ final public class CryptoBox {
         this.ptr = ptr;
     }
 
+    /**
+     * Open a <tt>CryptoBox</tt> that operates on the given directory.
+     * The directory must exist and be writeable.
+     *
+     * <p>Note: Do not open multiple boxes that operate on the same or
+     * overlapping directories. Doing so results in undefined behaviour.</p>
+     *
+     * @param dir The root storage directory of the box.
+     */
     public static CryptoBox open(String dir) throws CryptoException {
         synchronized (OPEN_LOCK) {
             return jniOpen(dir);
         }
     }
 
+    /**
+     * Get the local fingerprint as a hex-encoded byte array.
+     */
     public byte[] getLocalFingerprint() {
         synchronized (lock) {
             errorIfClosed();
@@ -36,6 +63,12 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Generate a range of prekeys.
+     *
+     * @param start The ID of the first prekey to generate.
+     * @param num The total number of prekeys to generate.
+     */
     public PreKey[] newPreKeys(int start, int num) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -43,6 +76,19 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Initialise a {@link CryptoSession} using the prekey of a peer.
+     *
+     * <p>This is the entry point for the initiator of a session, i.e.
+     * the side that wishes to send the first message.</p>
+     *
+     * <p>Note: The acquired session must eventually be released / closed
+     * either through {@link #closeSession} or {@link #closeAllSessions},
+     * otherwise resource leaks occur.</p>
+     *
+     * @param sid The ID of the new session.
+     * @param prekey The prekey of the peer.
+     */
     public CryptoSession initSessionFromPreKey(String sid, PreKey prekey) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -56,6 +102,18 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Initialise a {@link CryptoSession} using a received encrypted message.
+     *
+     * <p>This is the entry point for the recipient of an encrypted message.</p>
+     *
+     * <p>Note: The acquired session must eventually be released / closed
+     * either through {@link #closeSession} or {@link #closeAllSessions},
+     * otherwise resource leaks occur.</p>
+     *
+     * @param sid The ID of the new session.
+     * @param message The encrypted (prekey) message.
+     */
     public SessionMessage initSessionFromMessage(String sid, byte[] message) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -69,6 +127,18 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Get an existing session.
+     *
+     * <p>If the session does not exist, a {@link CryptoException} is thrown
+     * with the code {@link CryptoException.Code#NO_SESSION}.</p>
+     *
+     * <p>Note: The acquired session must eventually be released / closed
+     * either through {@link #closeSession} or {@link #closeAllSessions},
+     * otherwise resource leaks occur.</p>
+     *
+     * @param sid The ID of the session to get.
+     */
     public CryptoSession getSession(String sid) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -81,6 +151,18 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Try to get an existing session.
+     *
+     * <p>Equivalent to {@link #getSession}, except that <tt>null</tt>
+     * is returned if the session does not exist.</p>
+     *
+     * <p>Note: The acquired session must eventually be released / closed
+     * either through {@link #closeSession} or {@link #closeAllSessions},
+     * otherwise resource leaks occur.</p>
+     *
+     * @param sid The ID of the session to get.
+     */
     public CryptoSession tryGetSession(String sid) throws CryptoException {
         try { return getSession(sid); }
         catch (CryptoException ex) {
@@ -91,6 +173,17 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Close a session.
+     *
+     * <p>Note: After a session has been closed, any operation other than
+     * <tt>closeSession</tt> are considered programmer error and result in
+     * an {@link IllegalStateException}.</p>
+     *
+     * <p>If the session is already closed, this is a no-op.</p>
+     *
+     * @param sess The session to close.
+     */
     public void closeSession(CryptoSession sess) {
         synchronized (lock) {
             errorIfClosed();
@@ -99,6 +192,11 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Close all open sessions.
+     *
+     * @see #closeSession
+     */
     public void closeAllSessions() {
         synchronized (lock) {
             errorIfClosed();
@@ -109,6 +207,15 @@ final public class CryptoBox {
         }
     }
 
+    /**
+     * Close the <tt>CryptoBox</tt>.
+     *
+     * <p>Note: After a box has been closed, any operation other than
+     * <tt>close</tt> are considered programmer error and result in
+     * an {@link IllegalStateException}.</p>
+     *
+     * <p>If the box is already closed, this is a no-op.</p>
+     */
     public void close() {
         synchronized (lock) {
             if (isClosed()) {

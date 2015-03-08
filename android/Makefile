@@ -1,10 +1,10 @@
 SHELL   := /usr/bin/env bash
 
-VERSION := 0.1.0-alpha
-
 ANDROID_NDK_STANDALONE ?= $(HOME)/android-ndk-standalone
 ANDROID_ABI            := armeabi-v7a
 ANDROID_ARCH           := armv7-a
+
+VERSION := 0.1.0-alpha
 
 all: compile
 
@@ -25,11 +25,34 @@ distclean:
 	rm -rf dist
 	rm -f jni/*.so
 
-dist: compile doc
+dist-libs:
 	mkdir -p dist/lib
 	cp libs/$(ANDROID_ABI)/*.so dist/lib/
+
+dist/cryptobox-jni-$(VERSION).jar: compile
+	mkdir -p dist
 	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes .
-	tar -C dist -czf dist/cryptobox-android-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
+
+dist-jar: dist/cryptobox-jni-$(VERSION).jar
+
+dist/cryptobox-android-$(ANDROID_ARCH)-$(VERSION).tar.gz: dist-libs dist-jar doc
+	tar -C dist \
+		-czf dist/cryptobox-android-$(ANDROID_ARCH)-$(VERSION).tar.gz \
+		lib javadoc cryptobox-jni-$(VERSION).jar
+
+dist-tar: dist/cryptobox-android-$(ANDROID_ARCH)-$(VERSION).tar.gz
+
+dist/cryptobox-android-$(ANDROID_ARCH)-$(VERSION).aar: dist-libs dist-jar
+	mkdir -p dist/aar/jni/$(ANDROID_ABI)
+	cp dist/cryptobox-jni-$(VERSION).jar dist/aar/classes.jar
+	cp AndroidManifest.xml dist/aar/
+	cp dist/lib/* dist/aar/jni/$(ANDROID_ABI)/
+	cd dist/aar && zip -r ../cryptobox-android-$(ANDROID_ARCH)-$(VERSION).aar *
+	rm -rf dist/aar
+
+dist-aar: dist/cryptobox-android-$(ANDROID_ARCH)-$(VERSION).aar
+
+dist: dist-tar dist-aar
 
 #############################################################################
 # cryptobox

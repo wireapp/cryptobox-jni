@@ -1,6 +1,7 @@
 SHELL    := /usr/bin/env bash
-OS       := $(shell uname)
-ifeq ($(OS), Darwin)
+OS       := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+ARCH     := $(shell uname -m)
+ifeq ($(OS), darwin)
 LIB_TYPE := dylib
 LIB_PATH := DYLD_LIBRARY_PATH
 else
@@ -50,7 +51,7 @@ dist: compile doc
 	mkdir -p dist/lib
 	cp build/lib/*.$(LIB_TYPE) dist/lib/
 	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes .
-	tar -C dist -czf dist/cryptobox-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
+	tar -C dist -czf dist/cryptobox-jni-$(OS)-$(ARCH)-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
 
 #############################################################################
 # cryptobox

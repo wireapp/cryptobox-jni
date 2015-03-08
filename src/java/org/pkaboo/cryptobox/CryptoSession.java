@@ -5,6 +5,13 @@
 
 package org.pkaboo.cryptobox;
 
+/**
+ * A <tt>CryptoSession</tt> represents a cryptographic session with a peer
+ * (e.g. client or device) and is used to encrypt and decrypt messages sent
+ * and received, respectively.
+ *
+ * <p>A <tt>CryptoSession</tt> is thread-safe.</p>
+ */
 final public class CryptoSession {
     private long ptr;
     private final Object lock = new Object();
@@ -16,6 +23,11 @@ final public class CryptoSession {
         this.id  = id;
     }
 
+    /**
+     * Save the session, persisting any changes made to the underlying
+     * key material as a result of any {@link #encrypt} and {@link #decrypt}
+     * operations since the last save.
+     */
     public void save() throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -23,6 +35,12 @@ final public class CryptoSession {
         }
     }
 
+    /**
+     * Encrypt a byte array containing plaintext.
+     *
+     * @param plaintext The plaintext to encrypt.
+     * @return A byte array containing the ciphertext.
+     */
     public byte[] encrypt(byte[] plaintext) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -30,6 +48,12 @@ final public class CryptoSession {
         }
     }
 
+    /**
+     * Decrypt a byte array containing ciphertext.
+     *
+     * @param ciphertext The ciphertext to decrypt.
+     * @return A byte array containing the plaintext.
+     */
     public byte[] decrypt(byte[] ciphertext) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
@@ -37,6 +61,9 @@ final public class CryptoSession {
         }
     }
 
+    /**
+     * Get the remote fingerprint as a hex-encoded byte array.
+     */
     public byte[] getRemoteFingerprint() {
         synchronized (lock) {
             errorIfClosed();
