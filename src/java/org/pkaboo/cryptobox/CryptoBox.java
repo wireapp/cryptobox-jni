@@ -8,14 +8,22 @@ package org.pkaboo.cryptobox;
 import java.util.HashMap;
 
 /**
- * A <tt>CryptoBox</tt> is an opaque container of all the necessary
- * key material of single needed for exchanging ent-to-end encrypted
- * messages with peers for a single, logical client or device.
+ * A <tt>CryptoBox</tt> is an opaque container of all the necessary key material
+ * needed for exchanging ent-to-end encrypted messages with peers for a single,
+ * logical client or device and maintains a pool of {@link CryptoSession}s for
+ * all remote peers.
  *
- * <p>Every cryptographic session with a peer is represented by
- * a {@link CryptoSession}. These sessions are pooled by a <tt>CryptoBox</tt>,
- * i.e. if a session with the same session ID is requested multiple times,
- * the same instance is returned.
+ * <p>Every cryptographic session with a peer is represented by a {@link CryptoSession}.
+ * These sessions are pooled by a <tt>CryptoBox</tt>, i.e. if a session with the
+ * same session ID is requested multiple times, the same instance is returned.
+ * Consequently, <tt>CryptoSession</tt>s are kept in memory once loaded. They
+ * can be explicitly closed through {@link CryptoBox#closeSession} or
+ * {@link CryptoBox#closeAllSessions}. All loaded sessions are implicitly closed
+ * when the <tt>CryptoBox</tt> itself is closed via {@link CryptoBox#close}.
+ * Note that it is considered programmer error to let a <tt>CryptoBox</tt>
+ * become unreachable and thus eligible for garbage collection without having
+ * called {@link CryptoBox#close}, even though this class overrides {@link Object#finalize}
+ * as an additional safety net for deallocating all native resources.
  * </p>
  *
  * <p>A <tt>CryptoBox</tt> is thread-safe.</p>
@@ -82,10 +90,6 @@ final public class CryptoBox {
      * <p>This is the entry point for the initiator of a session, i.e.
      * the side that wishes to send the first message.</p>
      *
-     * <p>Note: The acquired session must eventually be released / closed
-     * either through {@link #closeSession} or {@link #closeAllSessions},
-     * otherwise resource leaks occur.</p>
-     *
      * @param sid The ID of the new session.
      * @param prekey The prekey of the peer.
      */
@@ -106,10 +110,6 @@ final public class CryptoBox {
      * Initialise a {@link CryptoSession} using a received encrypted message.
      *
      * <p>This is the entry point for the recipient of an encrypted message.</p>
-     *
-     * <p>Note: The acquired session must eventually be released / closed
-     * either through {@link #closeSession} or {@link #closeAllSessions},
-     * otherwise resource leaks occur.</p>
      *
      * @param sid The ID of the new session.
      * @param message The encrypted (prekey) message.
@@ -133,10 +133,6 @@ final public class CryptoBox {
      * <p>If the session does not exist, a {@link CryptoException} is thrown
      * with the code {@link CryptoException.Code#NO_SESSION}.</p>
      *
-     * <p>Note: The acquired session must eventually be released / closed
-     * either through {@link #closeSession} or {@link #closeAllSessions},
-     * otherwise resource leaks occur.</p>
-     *
      * @param sid The ID of the session to get.
      */
     public CryptoSession getSession(String sid) throws CryptoException {
@@ -157,10 +153,6 @@ final public class CryptoBox {
      * <p>Equivalent to {@link #getSession}, except that <tt>null</tt>
      * is returned if the session does not exist.</p>
      *
-     * <p>Note: The acquired session must eventually be released / closed
-     * either through {@link #closeSession} or {@link #closeAllSessions},
-     * otherwise resource leaks occur.</p>
-     *
      * @param sid The ID of the session to get.
      */
     public CryptoSession tryGetSession(String sid) throws CryptoException {
@@ -176,7 +168,7 @@ final public class CryptoBox {
     /**
      * Close a session.
      *
-     * <p>Note: After a session has been closed, any operation other than
+     * <p>Note: After a session has been closed, any operations other than
      * <tt>closeSession</tt> are considered programmer error and result in
      * an {@link IllegalStateException}.</p>
      *
@@ -210,7 +202,7 @@ final public class CryptoBox {
     /**
      * Close the <tt>CryptoBox</tt>.
      *
-     * <p>Note: After a box has been closed, any operation other than
+     * <p>Note: After a box has been closed, any operations other than
      * <tt>close</tt> are considered programmer error and result in
      * an {@link IllegalStateException}.</p>
      *

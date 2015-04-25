@@ -61,7 +61,7 @@ final public class CryptoException extends Exception {
         /** A message is a duplicate.
          *
          * <p>The message being decrypted is a duplicate of a message that has
-         * previously been decrypted with the same session. The message can usually
+         * previously been decrypted with the same session. The message can
          * be safely discarded.</p>
          */
         DUPLICATE_MESSAGE,
@@ -70,14 +70,15 @@ final public class CryptoException extends Exception {
          *
          * <p>There is an unreasonably large gap between the last decrypted
          * message and the message being decrypted, i.e. there are too many
-         * intermediate messages missing.</p>
+         * intermediate messages missing. The message should be dropped.</p>
          */
         TOO_DISTANT_FUTURE,
 
         /** A message is too old.
          *
          * <p>The message being decrypted is unreasonably old and cannot
-         * be decrypted any longer due to the key material no longer being available.</p>
+         * be decrypted any longer due to the key material no longer being available.
+         * The message should be dropped.</p>
          */
         OUTDATED_MESSAGE,
 
