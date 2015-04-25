@@ -9,7 +9,7 @@ LIB_TYPE := so
 LIB_PATH := LD_LIBRARY_PATH
 endif
 
-VERSION := 0.1.0-alpha
+VERSION := 0.1.0-alpha2
 
 all: compile
 
