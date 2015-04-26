@@ -28,7 +28,9 @@ public class CryptoBoxExample extends Activity {
             CryptoSession alice   = aliceBox.initSessionFromPreKey("alice", pks[0]);
             byte[] helloBobCipher = alice.encrypt("Hello Bøb!".getBytes(utf8));
 
-            Log.v(TAG, "Encrypted message: " + new String(helloBobCipher));
+            Log.v(TAG, "Message length: " + "Hello Bøb!".getBytes(utf8).length);
+            Log.v(TAG, "Encrypted prekey message length: " + helloBobCipher.length);
+            Log.v(TAG, "Encrypted prekey message: " + new String(helloBobCipher));
 
             SessionMessage smgs  = bobBox.initSessionFromMessage("bob", helloBobCipher);
             CryptoSession bob    = smgs.getSession();
