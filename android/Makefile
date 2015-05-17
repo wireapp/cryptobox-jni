@@ -62,7 +62,7 @@ include ../mk/cryptobox-src.mk
 jni/libcryptobox.so: libsodium build/src/$(CRYPTOBOX)
 	cd build/src/$(CRYPTOBOX) && \
 	cargo build --release --target=arm-linux-androideabi
-	cp build/src/$(CRYPTOBOX)/target/arm-linux-androideabi/release/libcryptobox-*.so jni/libcryptobox.so
+	cp build/src/$(CRYPTOBOX)/target/arm-linux-androideabi/release/libcryptobox.so jni/libcryptobox.so
 
 jni/include/cbox.h: build/src/$(CRYPTOBOX)
 	mkdir -p jni/include

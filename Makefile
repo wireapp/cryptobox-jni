@@ -61,7 +61,7 @@ include mk/cryptobox-src.mk
 build/lib/libcryptobox.$(LIB_TYPE): libsodium build/src/$(CRYPTOBOX)
 	mkdir -p build/lib
 	cd build/src/$(CRYPTOBOX) && cargo build --release
-	cp build/src/$(CRYPTOBOX)/target/release/libcryptobox-*.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
+	cp build/src/$(CRYPTOBOX)/target/release/libcryptobox.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
 
 build/include/cbox.h: build/src/$(CRYPTOBOX)
 	mkdir -p build/include
