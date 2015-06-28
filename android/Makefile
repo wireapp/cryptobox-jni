@@ -62,7 +62,7 @@ include ../mk/cryptobox-src.mk
 jni/libcryptobox.so: libsodium build/src/$(CRYPTOBOX)
 	cd build/src/$(CRYPTOBOX) && \
 	cargo rustc --lib --release --target=arm-linux-androideabi -- \
-		-L ../../libsodium-android-armv7-a/lib \
+		-L ../../libsodium-android-$(ANDROID_ARCH)/lib \
 		-l sodium \
 		-C ar=arm-linux-androideabi-ar \
 		-C linker=arm-linux-androideabi-gcc
