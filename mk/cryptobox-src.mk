@@ -7,5 +7,4 @@ build/src/$(CRYPTOBOX):
 	cd build/src && \
 	git clone $(CRYPTOBOX_GIT_URL) $(CRYPTOBOX) && \
 	cd $(CRYPTOBOX) && \
-	git checkout $(CRYPTOBOX_VERSION) && \
-	rm -f .cargo/config
+	git checkout $(CRYPTOBOX_VERSION)

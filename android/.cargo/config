@@ -1,7 +1,0 @@
-[target.arm-linux-androideabi]
-linker = "arm-linux-androideabi-gcc"
-ar     = "arm-linux-androideabi-ar"
-
-[target.arm-linux-androideabi.sodium]
-rustc-link-search = ["../../libsodium-android-armv7-a/lib"]
-rustc-link-lib    = ["sodium"]

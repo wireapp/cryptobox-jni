@@ -29,7 +29,7 @@ compile-native:
 	    -shared \
 	    -fPIC \
 	    -o build/lib/libcryptobox-jni.$(LIB_TYPE)
-	# OSX name mangling
+# OSX name mangling
 ifeq ($(OS), darwin)
 	install_name_tool -id "libcryptobox-jni.dylib" build/lib/libcryptobox-jni.dylib
 endif
@@ -64,9 +64,9 @@ include mk/cryptobox-src.mk
 
 build/lib/libcryptobox.$(LIB_TYPE): libsodium build/src/$(CRYPTOBOX)
 	mkdir -p build/lib
-	cd build/src/$(CRYPTOBOX) && cargo build --release
+	cd build/src/$(CRYPTOBOX) && cargo rustc --lib --release -- -L ../../lib -l sodium
 	cp build/src/$(CRYPTOBOX)/target/release/libcryptobox.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
-	# OSX name mangling
+# OSX name mangling
 ifeq ($(OS), darwin)
 	install_name_tool -id "@loader_path/libcryptobox.dylib" build/lib/libcryptobox.dylib
 endif
@@ -87,7 +87,7 @@ build/lib/libsodium.$(LIB_TYPE): build/src/$(LIBSODIUM)
 	cd build/src/$(LIBSODIUM) && \
 	./configure --prefix="$(CURDIR)/build/src/$(LIBSODIUM)/build" && make -j3 && make install
 	cp build/src/$(LIBSODIUM)/build/lib/libsodium.$(LIB_TYPE) build/lib/
-	# OSX name mangling
+# OSX name mangling
 ifeq ($(OS), darwin)
 	install_name_tool -id "@loader_path/libsodium.dylib" build/lib/libsodium.dylib
 endif

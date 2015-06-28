@@ -1,7 +1,0 @@
-[target.x86_64-unknown-linux-gnu.sodium]
-rustc-link-search = ["../../lib"]
-rustc-link-lib    = ["sodium"]
-
-[target.x86_64-apple-darwin.sodium]
-rustc-link-search = ["../../lib"]
-rustc-link-lib    = ["sodium"]
