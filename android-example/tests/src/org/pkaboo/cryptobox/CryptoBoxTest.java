@@ -73,6 +73,40 @@ public class CryptoBoxTest extends TestCase {
         }
     }
 
+    public void testPreKeyGeneration() {
+        try {
+            aliceKeys = aliceBox.newPreKeys(0xFFFC, 5);
+            int[] expected = { 0xFFFC, 0xFFFD, 0xFFFE, 0x0000, 0x0001 };
+            for (int i = 0; i < expected.length; ++i) {
+                assertEquals("Incorrect prekey ID", expected[i], aliceKeys[i].id);
+            }
+        } catch (CryptoException ex) {
+            fail(ex.toString());
+        }
+    }
+
+    public void testLastPreKey() {
+        CryptoSession alice = null;
+        CryptoSession bob   = null;
+        try {
+            PreKey bobLastKey = bobBox.newLastPreKey();
+            alice = aliceBox.initSessionFromPreKey("alice", bobLastKey);
+            byte[] helloBob = "Hello Bøb!".getBytes(utf8);
+            byte[] helloBobCipher = alice.encrypt(helloBob);
+            for (int i = 0; i < 3; ++i) {
+                SessionMessage smgs = bobBox.initSessionFromMessage("bob", helloBobCipher);
+                bob = smgs.getSession();
+                byte[] helloBobPlain = smgs.getMessage();
+                assertEquals( "Correct decrypted text",
+                              new String(helloBob, utf8),
+                              new String(helloBobPlain, utf8) );
+                bob.save(); // does not remove Bob's last prekey
+            }
+        } catch (CryptoException ex) {
+            fail(ex.toString());
+        }
+    }
+
     public void testSessionClosedException() {
         CryptoSession alice = null;
         try {

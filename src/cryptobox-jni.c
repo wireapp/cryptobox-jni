@@ -73,6 +73,27 @@ jobject cboxjni_new_session(JNIEnv * j_env, CBoxSession * csess, jstring j_sid) 
     return j_sess;
 }
 
+jobject cboxjni_new_prekey(JNIEnv * j_env, CBox * cbox, uint16_t id) {
+    CBoxVec * prekey = NULL;
+    CBoxResult rc = cbox_new_prekey(cbox, id, &prekey);
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+        return NULL;
+    }
+
+    jbyteArray j_prekey = cboxjni_vec2arr(j_env, prekey);
+    if (j_prekey == NULL) {
+        return NULL;
+    }
+
+    jobject j_pkb = (*j_env)->NewObject(j_env, cboxjni_pkbundle_class, cboxjni_pkbundle_ctor, id, j_prekey);
+    if (cboxjni_check_error(j_env, j_pkb)) {
+        return NULL;
+    }
+
+    return j_pkb;
+}
+
 // CryptoBox ////////////////////////////////////////////////////////////////
 
 JNIEXPORT jobject JNICALL
@@ -114,10 +135,21 @@ cboxjni_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     cbox_close(cbox);
 }
 
+JNIEXPORT jobject JNICALL
+cboxjni_new_last_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
+    #ifdef __ANDROID__
+    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Creating new last prekey");
+    #endif
+
+    CBox * cbox = (CBox *) (intptr_t) j_ptr;
+
+    return cboxjni_new_prekey(j_env, cbox, CBOX_LAST_PREKEY_ID);
+}
+
 JNIEXPORT jobjectArray JNICALL
 cboxjni_new_prekeys(JNIEnv * j_env, jclass j_class, jlong j_ptr, jint j_start, jint j_num) {
     #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Creating new prekeys");
+    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Creating new ephemeral prekeys");
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -128,24 +160,8 @@ cboxjni_new_prekeys(JNIEnv * j_env, jclass j_class, jlong j_ptr, jint j_start, j
     }
 
     for (int i = 0; i < j_num; ++i) {
-        jint j_id = j_start + i;
-        CBoxVec * prekey = NULL;
-        CBoxResult rc = cbox_new_prekey(cbox, j_id, &prekey);
-        if (rc != CBOX_SUCCESS) {
-            cboxjni_throw(j_env, rc);
-            return NULL;
-        }
-
-        jbyteArray j_prekey = cboxjni_vec2arr(j_env, prekey);
-        if (j_prekey == NULL) {
-            return NULL;
-        }
-
-        jobject j_pkb = (*j_env)->NewObject(j_env, cboxjni_pkbundle_class, cboxjni_pkbundle_ctor, j_id, j_prekey);
-        if (cboxjni_check_error(j_env, j_pkb)) {
-            return NULL;
-        }
-
+        uint16_t id = (j_start + i) % 0xFFFF;
+        jobject j_pkb = cboxjni_new_prekey(j_env, cbox, id);
         (*j_env)->SetObjectArrayElement(j_env, bundles, i, j_pkb);
         if ((*j_env)->ExceptionCheck(j_env) == JNI_TRUE) {
             return NULL;
@@ -365,6 +381,7 @@ static JNINativeMethod cboxjni_box_methods[] = {
     { "jniOpen"                  , "(Ljava/lang/String;)Lorg/pkaboo/cryptobox/CryptoBox;"         , (void *) cboxjni_open              },
     { "jniClose"                 , "(J)V"                                                         , (void *) cboxjni_close             },
     { "jniNewPreKeys"            , "(JII)[Lorg/pkaboo/cryptobox/PreKey;"                          , (void *) cboxjni_new_prekeys       },
+    { "jniNewLastPreKey"         , "(J)Lorg/pkaboo/cryptobox/PreKey;"                             , (void *) cboxjni_new_last_prekey   },
     { "jniGetLocalFingerprint"   , "(J)[B"                                                        , (void *) cboxjni_local_fingerprint },
     { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey  },
     { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message },
