@@ -65,7 +65,8 @@ jni/libcryptobox.so: libsodium build/src/$(CRYPTOBOX)
 		-L ../../libsodium-android-$(ANDROID_ARCH)/lib \
 		-l sodium \
 		-C ar=arm-linux-androideabi-ar \
-		-C linker=arm-linux-androideabi-gcc
+		-C linker=arm-linux-androideabi-gcc \
+		-C link_args="-Wl,-soname,libcryptobox.so"
 	cp build/src/$(CRYPTOBOX)/target/arm-linux-androideabi/release/libcryptobox.so jni/libcryptobox.so
 
 jni/include/cbox.h: build/src/$(CRYPTOBOX)
