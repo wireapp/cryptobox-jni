@@ -22,7 +22,7 @@ compile: cryptobox compile-native compile-java
 compile-native:
 	$(CC) -std=c99 -g -Wall src/cryptobox-jni.c \
 	    -I${JAVA_HOME}/include \
-		-I${JAVA_HOME}/include/$(OS) \
+	    -I${JAVA_HOME}/include/$(OS) \
 	    -Ibuild/include \
 	    -Lbuild/lib \
 	    -lsodium \
