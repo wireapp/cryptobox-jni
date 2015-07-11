@@ -183,14 +183,14 @@ cboxjni_local_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 
 JNIEXPORT jobject JNICALL
 cboxjni_init_from_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid, jbyteArray j_prekey) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Initialising session from prekey");
-    #endif
-
     char const * sid = (*j_env)->GetStringUTFChars(j_env, j_sid, 0);
     if (cboxjni_check_error(j_env, sid)) {
         return NULL;
     }
+
+    #ifdef __ANDROID__
+    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Initialising session from prekey: %s", sid);
+    #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
 
@@ -218,14 +218,14 @@ cboxjni_init_from_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_
 
 JNIEXPORT jobject JNICALL
 cboxjni_init_from_message(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid, jbyteArray j_message) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Intialising session from message");
-    #endif
-
     char const * sid = (*j_env)->GetStringUTFChars(j_env, j_sid, 0);
     if (cboxjni_check_error(j_env, sid)) {
         return NULL;
     }
+
+    #ifdef __ANDROID__
+    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Intialising session from message: %s", sid);
+    #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
 
@@ -285,6 +285,26 @@ cboxjni_session_get(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid) 
     }
 
     return cboxjni_new_session(j_env, csess, j_sid);
+}
+
+JNIEXPORT void JNICALL
+cboxjni_session_delete(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid) {
+    char const * sid = (*j_env)->GetStringUTFChars(j_env, j_sid, 0);
+    if (cboxjni_check_error(j_env, sid)) {
+        return;
+    }
+
+    #ifdef __ANDROID__
+    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Deleting CryptoSession: %s", sid);
+    #endif
+
+    CBox * cbox = (CBox *) (intptr_t) j_ptr;
+
+    CBoxResult rc = cbox_session_delete(cbox, sid);
+
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+    }
 }
 
 // CryptoSession ////////////////////////////////////////////////////////////
@@ -385,7 +405,8 @@ static JNINativeMethod cboxjni_box_methods[] = {
     { "jniGetLocalFingerprint"   , "(J)[B"                                                        , (void *) cboxjni_local_fingerprint },
     { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey  },
     { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message },
-    { "jniGetSession"            , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_get       }
+    { "jniGetSession"            , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_get       },
+    { "jniDeleteSession"         , "(JLjava/lang/String;)V"                                       , (void *) cboxjni_session_delete    }
 };
 
 static JNINativeMethod cboxjni_sess_methods[] = {

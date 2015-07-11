@@ -53,8 +53,12 @@ final public class CryptoException extends Exception {
 
         /** A message is invalid.
          *
-         * <p>The message being decrypted is in some way invalid and cannot
-         * be understood.</p>
+         * <p>The message message is well-formed but cannot be decrypted, e.g.
+         * because the message is used to initialise a session but does not
+         * contain a {@link PreKey} or the used session does not contain the
+         * appropriate key material for decrypting the message. The problem
+         * should be reported to the user, as it might be necessary for both
+         * peers to re-initialise their sessions.</p>
          */
         INVALID_MESSAGE,
 
@@ -85,7 +89,7 @@ final public class CryptoException extends Exception {
         /** A message or key could not be decoded.
          *
          * <p>The message or key being decoded is either malformed or
-         * otherwise encoded in a way that it cannot be processed.</p>
+         * otherwise encoded in a way such it cannot be understood.</p>
          */
         DECODE_ERROR,
 

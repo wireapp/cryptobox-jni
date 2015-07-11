@@ -226,6 +226,33 @@ final public class CryptoBox {
     }
 
     /**
+     * Delete a session.
+     *
+     * If the session is currently loaded, it is automatically closed before
+     * being deleted.
+     *
+     * <p>Note: After a session has been deleted, further messages from the peer
+     * can no longer be decrypted. Furthermore, initialising a new session with
+     * the peer from a new prekey and sending messages will result in the peer
+     * not being able to decrypt these messages until the old session is deleted
+     * by the peer as well.
+     * </p>
+     *
+     * @param String The ID of the session to delete.
+     */
+    public void deleteSession(String sid) throws CryptoException {
+        synchronized (lock) {
+            errorIfClosed();
+            CryptoSession sess = sessions.get(sid);
+            if (sess != null) {
+                sessions.remove(sid);
+                sess.close();
+            }
+            jniDeleteSession(this.ptr, sid);
+        }
+    }
+
+    /**
      * Close the <tt>CryptoBox</tt>.
      *
      * <p>Note: After a box has been closed, any operations other than
@@ -269,4 +296,5 @@ final public class CryptoBox {
     private native static CryptoSession jniInitSessionFromPreKey(long ptr, String sid, byte[] prekey) throws CryptoException;
     private native static SessionMessage jniInitSessionFromMessage(long ptr, String sid, byte[] message) throws CryptoException;
     private native static CryptoSession jniGetSession(long ptr, String sid) throws CryptoException;
+    private native static void jniDeleteSession(long ptr, String sid) throws CryptoException;
 }

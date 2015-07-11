@@ -143,4 +143,63 @@ public class CryptoBoxTest extends TestCase {
             // expected
         }
     }
+
+    public void testDeleteSession() {
+        CryptoSession alice = null;
+        CryptoSession bob = null;
+        try {
+            // Setup Alice
+            alice = aliceBox.initSessionFromPreKey("alice", bobKeys[0]);
+            byte[] helloBob = "Hello Bøb!".getBytes(utf8);
+            byte[] helloBobCipher = alice.encrypt(helloBob);
+            alice.save();
+
+            // Setup Bob
+            SessionMessage smgs = bobBox.initSessionFromMessage("bob", helloBobCipher);
+            bob = smgs.getSession();
+
+            // Alice "loses" the session
+            aliceBox.closeSession(alice);
+            alice = aliceBox.getSession("alice");
+            aliceBox.deleteSession(alice.id);
+            assertTrue(alice.isClosed());
+            assertNull(aliceBox.tryGetSession("alice"));
+
+            // Bob sends a message
+            byte[] helloAlice = "Hello Bøb!".getBytes(utf8);
+            byte[] helloAliceCipher = bob.encrypt(helloAlice);
+
+            // Since Alice has no session, she tries to initialise one
+            // when receiving a message from Bob.
+            try {
+                aliceBox.initSessionFromMessage("alice", helloAliceCipher);
+            } catch (CryptoException ex) {
+                if (ex.code != CryptoException.Code.INVALID_MESSAGE) {
+                    fail(ex.toString());
+                }
+            }
+
+            // Alice initialises a new session with Bob
+            alice = aliceBox.initSessionFromPreKey("alice", bobKeys[0]);
+            byte[] helloAgainBobCipher = alice.encrypt(helloBob);
+
+            // Since Bob still has the session, he will try to use it.
+            try {
+                bob.decrypt(helloAgainBobCipher);
+            } catch (CryptoException ex) {
+                if (ex.code != CryptoException.Code.INVALID_MESSAGE) {
+                    fail(ex.toString());
+                }
+            }
+        } catch (CryptoException ex) {
+            fail(ex.toString());
+        } finally {
+            if (alice != null) {
+                aliceBox.closeSession(alice);
+            }
+            if (bob != null) {
+                bobBox.closeSession(bob);
+            }
+        }
+    }
 }
