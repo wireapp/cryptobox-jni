@@ -9,7 +9,7 @@ LIB_TYPE := so
 LIB_PATH := LD_LIBRARY_PATH
 endif
 
-VERSION := 0.1.0-alpha3
+include mk/version.mk
 
 all: compile
 
@@ -22,6 +22,7 @@ compile: cryptobox compile-native compile-java
 compile-native:
 	$(CC) -std=c99 -g -Wall src/cryptobox-jni.c \
 	    -I${JAVA_HOME}/include \
+		-I${JAVA_HOME}/include/$(OS) \
 	    -Ibuild/include \
 	    -Lbuild/lib \
 	    -lsodium \

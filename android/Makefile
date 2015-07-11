@@ -4,7 +4,7 @@ ANDROID_NDK_STANDALONE ?= $(HOME)/android-ndk-standalone
 ANDROID_ABI            := armeabi-v7a
 ANDROID_ARCH           := armv7-a
 
-VERSION := 0.1.0-alpha3
+include ../mk/version.mk
 
 all: compile
 
