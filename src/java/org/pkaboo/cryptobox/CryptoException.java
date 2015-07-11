@@ -53,7 +53,7 @@ final public class CryptoException extends Exception {
 
         /** A message is invalid.
          *
-         * <p>The message message is well-formed but cannot be decrypted, e.g.
+         * <p>The message is well-formed but cannot be decrypted, e.g.
          * because the message is used to initialise a session but does not
          * contain a {@link PreKey} or the used session does not contain the
          * appropriate key material for decrypting the message. The problem
