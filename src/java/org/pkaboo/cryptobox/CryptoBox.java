@@ -238,7 +238,7 @@ final public class CryptoBox {
      * by the peer as well.
      * </p>
      *
-     * @param String The ID of the session to delete.
+     * @param sid The ID of the session to delete.
      */
     public void deleteSession(String sid) throws CryptoException {
         synchronized (lock) {
