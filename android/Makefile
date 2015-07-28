@@ -22,7 +22,7 @@ compile: cryptobox
 
 doc:
 	mkdir -p dist/javadoc
-	javadoc -public -d dist/javadoc ../src/java/org/pkaboo/cryptobox/*.java
+	javadoc -Xdoclint:none -public -d dist/javadoc ../src/java/org/pkaboo/cryptobox/*.java
 
 distclean:
 	rm -rf build

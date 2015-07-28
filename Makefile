@@ -41,7 +41,7 @@ compile-java:
 
 doc:
 	mkdir -p dist/javadoc
-	javadoc -public -d dist/javadoc src/java/org/pkaboo/cryptobox/*.java
+	javadoc -Xdoclint:none -public -d dist/javadoc src/java/org/pkaboo/cryptobox/*.java
 
 test:
 	make -C android-example/tests test
