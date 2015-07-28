@@ -325,9 +325,14 @@ cboxjni_session_encrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray 
     }
 
     CBoxVec * cipher = NULL;
-    cbox_encrypt(csess, (uint8_t *) plain, plain_len, &cipher);
+    CBoxResult rc = cbox_encrypt(csess, (uint8_t *) plain, plain_len, &cipher);
 
     (*j_env)->ReleaseByteArrayElements(j_env, j_plain, plain, JNI_ABORT);
+
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+        return NULL;
+    }
 
     return cboxjni_vec2arr(j_env, cipher);
 }

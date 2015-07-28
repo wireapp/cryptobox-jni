@@ -6,6 +6,10 @@ ANDROID_ARCH           := armv7-a
 
 include ../mk/version.mk
 
+# pkg-config is invoked by libsodium-sys
+# cf. https://github.com/alexcrichton/pkg-config-rs/blob/master/src/lib.rs#L12
+export PKG_CONFIG_ALLOW_CROSS=1
+
 all: compile
 
 clean:
