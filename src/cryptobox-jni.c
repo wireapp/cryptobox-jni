@@ -47,7 +47,7 @@ bool cboxjni_check_error(JNIEnv * j_env, void const * val) {
 }
 
 jbyteArray cboxjni_vec2arr(JNIEnv * j_env, CBoxVec * v) {
-    uint32_t v_len   = cbox_vec_len(v);
+    size_t     v_len = cbox_vec_len(v);
     jbyteArray j_arr = (*j_env)->NewByteArray(j_env, v_len);
     if (cboxjni_check_error(j_env, j_arr)) {
         cbox_vec_free(v);
@@ -116,7 +116,7 @@ cboxjni_open(JNIEnv * j_env, jclass j_class, jstring j_dir) {
         return NULL;
     }
 
-    jlong ptr   = (jlong) (intptr_t) cbox;
+    jlong   ptr = (jlong) (intptr_t) cbox;
     jobject obj = (*j_env)->NewObject(j_env, j_class, cboxjni_box_ctor, ptr);
     if (cboxjni_check_error(j_env, obj)) {
         return NULL;
@@ -194,8 +194,8 @@ cboxjni_init_from_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
 
-    uint16_t prekey_len = (*j_env)->GetArrayLength(j_env, j_prekey);
-    jbyte *  prekey     = (*j_env)->GetByteArrayElements(j_env, j_prekey, NULL);
+    size_t prekey_len = (*j_env)->GetArrayLength(j_env, j_prekey);
+    jbyte *  prekey   = (*j_env)->GetByteArrayElements(j_env, j_prekey, NULL);
 
     if (prekey == NULL) {
         (*j_env)->ReleaseStringUTFChars(j_env, j_sid, sid);
@@ -229,8 +229,8 @@ cboxjni_init_from_message(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
 
-    uint32_t message_len = (*j_env)->GetArrayLength(j_env, j_message);
-    jbyte *  message     = (*j_env)->GetByteArrayElements(j_env, j_message, NULL);
+    size_t message_len = (*j_env)->GetArrayLength(j_env, j_message);
+    jbyte *  message   = (*j_env)->GetByteArrayElements(j_env, j_message, NULL);
 
     if (message == NULL) {
         (*j_env)->ReleaseStringUTFChars(j_env, j_sid, sid);
@@ -317,8 +317,8 @@ cboxjni_session_encrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray 
 
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
 
-    uint32_t plain_len = (*j_env)->GetArrayLength(j_env, j_plain);
-    jbyte *  plain     = (*j_env)->GetByteArrayElements(j_env, j_plain, NULL);
+    size_t plain_len = (*j_env)->GetArrayLength(j_env, j_plain);
+    jbyte *  plain   = (*j_env)->GetByteArrayElements(j_env, j_plain, NULL);
 
     if (cboxjni_check_error(j_env, plain)) {
         return NULL;
@@ -345,8 +345,8 @@ cboxjni_session_decrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray 
 
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
 
-    uint32_t cipher_len = (*j_env)->GetArrayLength(j_env, j_cipher);
-    jbyte *  cipher     = (*j_env)->GetByteArrayElements(j_env, j_cipher, NULL);
+    size_t cipher_len = (*j_env)->GetArrayLength(j_env, j_cipher);
+    jbyte *  cipher   = (*j_env)->GetByteArrayElements(j_env, j_cipher, NULL);
 
     if (cboxjni_check_error(j_env, cipher)) {
         return NULL;
