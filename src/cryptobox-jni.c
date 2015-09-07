@@ -302,6 +302,8 @@ cboxjni_session_delete(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_si
 
     CBoxResult rc = cbox_session_delete(cbox, sid);
 
+    (*j_env)->ReleaseStringUTFChars(j_env, j_sid, sid);
+
     if (rc != CBOX_SUCCESS) {
         cboxjni_throw(j_env, rc);
     }
