@@ -32,6 +32,7 @@ import java.util.HashMap;
  */
 final public class CryptoBox {
     static {
+        System.loadLibrary("sodium");
         System.loadLibrary("cryptobox");
         System.loadLibrary("cryptobox-jni");
     }
