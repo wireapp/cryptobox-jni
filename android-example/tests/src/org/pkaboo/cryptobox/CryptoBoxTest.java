@@ -10,7 +10,9 @@ import junit.framework.*;
 import static junit.framework.Assert.*;
 
 public class CryptoBoxTest extends TestCase {
-    private Charset   utf8     = Charset.forName("UTF-8");
+    private Charset utf8       = Charset.forName("UTF-8");
+    private String aliceDir    = "";
+    private String bobDir      = "";
     private CryptoBox aliceBox = null;
     private CryptoBox bobBox   = null;
     private PreKey[] aliceKeys = null;
@@ -24,12 +26,12 @@ public class CryptoBoxTest extends TestCase {
     }
 
     public void setUp() throws CryptoException, IOException {
-        String aliceDir = mkTmpDir("cryptobox-alice");
-        aliceBox = CryptoBox.open(aliceDir);
+        aliceDir  = mkTmpDir("cryptobox-alice");
+        aliceBox  = CryptoBox.open(aliceDir);
         aliceKeys = aliceBox.newPreKeys(0, 10);
 
-        String bobDir = mkTmpDir("cryptobox-bob");
-        bobBox = CryptoBox.open(bobDir);
+        bobDir  = mkTmpDir("cryptobox-bob");
+        bobBox  = CryptoBox.open(bobDir);
         bobKeys = bobBox.newPreKeys(0, 10);
     }
 
@@ -200,6 +202,43 @@ public class CryptoBoxTest extends TestCase {
             if (bob != null) {
                 bobBox.closeSession(bob);
             }
+        }
+    }
+
+    public void testExternalIdentity() {
+        try {
+            byte[] aliceIdent = aliceBox.copyIdentity();
+
+            // Re-open with IdentityMode.COMPLETE
+            aliceBox.close();
+            aliceBox = CryptoBox.openWith(aliceDir, aliceIdent, CryptoBox.IdentityMode.COMPLETE);
+            assertTrue(Arrays.equals(aliceIdent, aliceBox.copyIdentity()));
+            // Re-open with IdentityMode.PUBLIC
+            aliceBox.close();
+            aliceBox = CryptoBox.openWith(aliceDir, aliceIdent, CryptoBox.IdentityMode.PUBLIC);
+            assertTrue(Arrays.equals(aliceIdent, aliceBox.copyIdentity()));
+
+            // Incomplete identity
+            try {
+                CryptoBox.open(aliceDir);
+            } catch (CryptoException ex) {
+                if (ex.code == CryptoException.Code.IDENTITY_ERROR) {
+                    return; // expected
+                }
+                throw ex;
+            }
+
+            // Wrong identity
+            try {
+                CryptoBox.openWith(aliceDir, bobBox.copyIdentity(), CryptoBox.IdentityMode.COMPLETE);
+            } catch (CryptoException ex) {
+                if (ex.code == CryptoException.Code.IDENTITY_ERROR) {
+                    return; // expected
+                }
+                throw ex;
+            }
+        } catch (CryptoException ex) {
+            fail(ex.toString());
         }
     }
 }
