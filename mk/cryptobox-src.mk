@@ -1,4 +1,4 @@
-CRYPTOBOX_VERSION := v0.3.1
+CRYPTOBOX_VERSION := v0.4.0
 CRYPTOBOX         := cryptobox-$(CRYPTOBOX_VERSION)
 CRYPTOBOX_GIT_URL := git@github.com:romanb/cryptobox.git
 

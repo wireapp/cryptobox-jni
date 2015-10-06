@@ -125,6 +125,45 @@ cboxjni_open(JNIEnv * j_env, jclass j_class, jstring j_dir) {
     return obj;
 }
 
+JNIEXPORT jobject JNICALL
+cboxjni_open_with(JNIEnv * j_env, jclass j_class, jstring j_dir, jbyteArray j_id, jint j_mode) {
+    #ifdef __ANDROID__
+    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Opening CryptoBox with external identity");
+    #endif
+
+    char const * dir = (*j_env)->GetStringUTFChars(j_env, j_dir, 0);
+    if (cboxjni_check_error(j_env, dir)) {
+        return NULL;
+    }
+
+    size_t  id_len = (*j_env)->GetArrayLength(j_env, j_id);
+    jbyte * id     = (*j_env)->GetByteArrayElements(j_env, j_id, NULL);
+
+    if (id == NULL) {
+        (*j_env)->ReleaseStringUTFChars(j_env, j_dir, dir);
+        return NULL;
+    }
+
+    CBox * cbox = NULL;
+    CBoxResult rc = cbox_file_open_with(dir, (uint8_t *) id, id_len, j_mode, &cbox);
+
+    (*j_env)->ReleaseByteArrayElements(j_env, j_id, id, JNI_ABORT);
+    (*j_env)->ReleaseStringUTFChars(j_env, j_dir, dir);
+
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+        return NULL;
+    }
+
+    jlong   ptr = (jlong) (intptr_t) cbox;
+    jobject obj = (*j_env)->NewObject(j_env, j_class, cboxjni_box_ctor, ptr);
+    if (cboxjni_check_error(j_env, obj)) {
+        return NULL;
+    }
+
+    return obj;
+}
+
 JNIEXPORT void JNICALL
 cboxjni_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     #ifdef __ANDROID__
@@ -179,6 +218,25 @@ cboxjni_local_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     cbox_fingerprint_local(cbox, &fp);
 
     return cboxjni_vec2arr(j_env, fp);
+}
+
+JNIEXPORT jbyteArray JNICALL
+cboxjni_copy_identity(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
+    #ifdef __ANDROID__
+    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Copying CryptoBox identity");
+    #endif
+
+    CBox * cbox = (CBox *) (intptr_t) j_ptr;
+
+    CBoxVec * id = NULL;
+    CBoxResult rc = cbox_identity_copy(cbox, &id);
+
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+        return NULL;
+    }
+
+    return cboxjni_vec2arr(j_env, id);
 }
 
 JNIEXPORT jobject JNICALL
@@ -406,10 +464,12 @@ cboxjni_remote_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 
 static JNINativeMethod cboxjni_box_methods[] = {
     { "jniOpen"                  , "(Ljava/lang/String;)Lorg/pkaboo/cryptobox/CryptoBox;"         , (void *) cboxjni_open              },
+    { "jniOpenWith"              , "(Ljava/lang/String;[BI)Lorg/pkaboo/cryptobox/CryptoBox;"      , (void *) cboxjni_open_with         },
     { "jniClose"                 , "(J)V"                                                         , (void *) cboxjni_close             },
     { "jniNewPreKeys"            , "(JII)[Lorg/pkaboo/cryptobox/PreKey;"                          , (void *) cboxjni_new_prekeys       },
     { "jniNewLastPreKey"         , "(J)Lorg/pkaboo/cryptobox/PreKey;"                             , (void *) cboxjni_new_last_prekey   },
     { "jniGetLocalFingerprint"   , "(J)[B"                                                        , (void *) cboxjni_local_fingerprint },
+    { "jniCopyIdentity"          , "(J)[B"                                                        , (void *) cboxjni_copy_identity     },
     { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey  },
     { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message },
     { "jniGetSession"            , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_get       },

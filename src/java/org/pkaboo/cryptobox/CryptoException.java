@@ -20,7 +20,7 @@ final public class CryptoException extends Exception {
     private static Code fromNativeCode(int code) {
         switch (code) {
             case  1: return Code.STORAGE_ERROR;
-            case  2: return Code.NO_SESSION;
+            case  2: return Code.SESSION_NOT_FOUND;
             case  3: return Code.DECODE_ERROR;
             case  4: return Code.REMOTE_IDENTITY_CHANGED;
             case  5: return Code.INVALID_SIGNATURE;
@@ -28,13 +28,15 @@ final public class CryptoException extends Exception {
             case  7: return Code.DUPLICATE_MESSAGE;
             case  8: return Code.TOO_DISTANT_FUTURE;
             case  9: return Code.OUTDATED_MESSAGE;
+            case 13: return Code.IDENTITY_ERROR;
+            case 14: return Code.PREKEY_NOT_FOUND;
             default: return Code.UNKNOWN_ERROR;
         }
     }
 
     public enum Code {
         /** A requested session was not found. */
-        NO_SESSION,
+        SESSION_NOT_FOUND,
 
         /** The remote identity of a session changed.
          *
@@ -99,6 +101,18 @@ final public class CryptoException extends Exception {
          * The operation may be retried a limited number of times.</p>
          */
         STORAGE_ERROR,
+
+        /** A CBox has been opened with an incomplete or mismatching identity
+         * using {@link CryptoBox#openWith}.
+         *
+         * <p>This is typically a programmer error.</p>
+         */
+        IDENTITY_ERROR,
+
+        /** An attempt was made to initialise a new session using {@link CryptoBox#initSessionFromMessage}
+         * whereby the prekey corresponding to the prekey ID in the message could not be found.
+         */
+        PREKEY_NOT_FOUND,
 
         /** An unspecified error occurred. */
         UNKNOWN_ERROR
