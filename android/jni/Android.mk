@@ -3,13 +3,13 @@ LOCAL_PATH := $(call my-dir)
 # libsodium
 include $(CLEAR_VARS)
 LOCAL_MODULE    := libsodium-prebuilt
-LOCAL_SRC_FILES := libsodium.so
+LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/libsodium.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 # libcryptobox
 include $(CLEAR_VARS)
 LOCAL_MODULE            := libcryptobox-prebuilt
-LOCAL_SRC_FILES         := libcryptobox.so
+LOCAL_SRC_FILES         := $(TARGET_ARCH_ABI)/libcryptobox.so
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_SHARED_LIBRARY)
 
