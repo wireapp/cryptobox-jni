@@ -63,9 +63,10 @@ jbyteArray cboxjni_vec2arr(JNIEnv * j_env, CBoxVec * v) {
     return j_arr;
 }
 
-jobject cboxjni_new_session(JNIEnv * j_env, CBoxSession * csess, jstring j_sid) {
+jobject cboxjni_new_session(JNIEnv * j_env, CBox * cbox, CBoxSession * csess, jstring j_sid) {
+    jlong j_box_ptr  = (jlong) (intptr_t) cbox;
     jlong j_sess_ptr = (jlong) (intptr_t) csess;
-    jobject j_sess   = (*j_env)->NewObject(j_env, cboxjni_sess_class, cboxjni_sess_ctor, j_sess_ptr, j_sid);
+    jobject j_sess   = (*j_env)->NewObject(j_env, cboxjni_sess_class, cboxjni_sess_ctor, j_box_ptr, j_sess_ptr, j_sid);
     if (cboxjni_check_error(j_env, j_sess)) {
         return NULL;
     }
@@ -271,7 +272,7 @@ cboxjni_init_from_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_
         return NULL;
     }
 
-    return cboxjni_new_session(j_env, sess, j_sid);
+    return cboxjni_new_session(j_env, cbox, sess, j_sid);
 }
 
 JNIEXPORT jobject JNICALL
@@ -307,7 +308,7 @@ cboxjni_init_from_message(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j
         return NULL;
     }
 
-    jobject j_sess = cboxjni_new_session(j_env, sess, j_sid);
+    jobject j_sess = cboxjni_new_session(j_env, cbox, sess, j_sid);
 
     jbyteArray j_plaintext = cboxjni_vec2arr(j_env, plain);
     if (j_plaintext == NULL) {
@@ -320,7 +321,7 @@ cboxjni_init_from_message(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j
 }
 
 JNIEXPORT jobject JNICALL
-cboxjni_session_get(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid) {
+cboxjni_session_load(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid) {
     char const * sid = (*j_env)->GetStringUTFChars(j_env, j_sid, 0);
     if (cboxjni_check_error(j_env, sid)) {
         return NULL;
@@ -333,7 +334,7 @@ cboxjni_session_get(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid) 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
 
     CBoxSession * csess = NULL;
-    CBoxResult rc = cbox_session_get(cbox, sid, &csess);
+    CBoxResult rc = cbox_session_load(cbox, sid, &csess);
 
     (*j_env)->ReleaseStringUTFChars(j_env, j_sid, sid);
 
@@ -342,7 +343,7 @@ cboxjni_session_get(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid) 
         return NULL;
     }
 
-    return cboxjni_new_session(j_env, csess, j_sid);
+    return cboxjni_new_session(j_env, cbox, csess, j_sid);
 }
 
 JNIEXPORT void JNICALL
@@ -426,14 +427,15 @@ cboxjni_session_decrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray 
 }
 
 JNIEXPORT void JNICALL
-cboxjni_session_save(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
+cboxjni_session_save(JNIEnv * j_env, jclass j_class, jlong j_box_ptr, jlong j_ptr) {
     #ifdef __ANDROID__
     __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Saving CryptoSession");
     #endif
 
+    CBox        * cbox  = (CBox *) (intptr_t) j_box_ptr;
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
 
-    CBoxResult rc = cbox_session_save(csess);
+    CBoxResult rc = cbox_session_save(cbox, csess);
     if (rc != CBOX_SUCCESS) {
         cboxjni_throw(j_env, rc);
     }
@@ -472,14 +474,14 @@ static JNINativeMethod cboxjni_box_methods[] = {
     { "jniCopyIdentity"          , "(J)[B"                                                        , (void *) cboxjni_copy_identity     },
     { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey  },
     { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message },
-    { "jniGetSession"            , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_get       },
+    { "jniLoadSession"           , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_load      },
     { "jniDeleteSession"         , "(JLjava/lang/String;)V"                                       , (void *) cboxjni_session_delete    }
 };
 
 static JNINativeMethod cboxjni_sess_methods[] = {
     { "jniEncrypt"              , "(J[B)[B" , (void *) cboxjni_session_encrypt    },
     { "jniDecrypt"              , "(J[B)[B" , (void *) cboxjni_session_decrypt    },
-    { "jniSave"                 , "(J)V"    , (void *) cboxjni_session_save       },
+    { "jniSave"                 , "(JJ)V"   , (void *) cboxjni_session_save       },
     { "jniClose"                , "(J)V"    , (void *) cboxjni_session_close      },
     { "jniGetRemoteFingerprint" , "(J)[B"   , (void *) cboxjni_remote_fingerprint }
 };
@@ -534,7 +536,7 @@ jint JNI_OnLoad(JavaVM * vm, void * reserved) {
     cboxjni_ex_ctor = cboxjni_find_method(j_env, cboxjni_ex_class, "<init>", "(I)V");
     if (cboxjni_ex_ctor == NULL) return JNI_ERR;
 
-    cboxjni_sess_ctor = cboxjni_find_method(j_env, cboxjni_sess_class, "<init>", "(JLjava/lang/String;)V");
+    cboxjni_sess_ctor = cboxjni_find_method(j_env, cboxjni_sess_class, "<init>", "(JJLjava/lang/String;)V");
     if (cboxjni_sess_ctor == NULL) return JNI_ERR;
 
     cboxjni_box_ctor = cboxjni_find_method(j_env, cboxjni_box_class, "<init>", "(J)V");

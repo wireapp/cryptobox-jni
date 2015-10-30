@@ -63,18 +63,18 @@ dist: compile doc
 
 include mk/cryptobox-src.mk
 
-build/lib/libcryptobox.$(LIB_TYPE): libsodium build/src/$(CRYPTOBOX)
+build/lib/libcryptobox.$(LIB_TYPE): libsodium | build/src/$(CRYPTOBOX)
 	mkdir -p build/lib
-	cd build/src/$(CRYPTOBOX) && cargo rustc --lib --release -- -L ../../lib -l sodium
-	cp build/src/$(CRYPTOBOX)/target/release/libcryptobox.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
+	cd build/src/$(CRYPTOBOX)/cryptobox-c && cargo rustc --lib --release -- -L ../../../lib -l sodium
+	cp build/src/$(CRYPTOBOX)/cryptobox-c/target/release/libcryptobox.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
 # OSX name mangling
 ifeq ($(OS), darwin)
 	install_name_tool -id "@loader_path/libcryptobox.dylib" build/lib/libcryptobox.dylib
 endif
 
-build/include/cbox.h: build/src/$(CRYPTOBOX)
+build/include/cbox.h: | build/src/$(CRYPTOBOX)
 	mkdir -p build/include
-	cp build/src/$(CRYPTOBOX)/cbox.h build/include/
+	cp build/src/$(CRYPTOBOX)/cryptobox-c/src/cbox.h build/include/
 
 cryptobox: build/lib/libcryptobox.$(LIB_TYPE) build/include/cbox.h
 
