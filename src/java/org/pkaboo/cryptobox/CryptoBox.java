@@ -211,7 +211,7 @@ final public class CryptoBox {
             errorIfClosed();
             CryptoSession sess = sessions.get(sid);
             if (sess == null) {
-                sess = jniGetSession(this.ptr, sid);
+                sess = jniLoadSession(this.ptr, sid);
                 sessions.put(sid, sess);
             }
             return sess;
@@ -341,7 +341,7 @@ final public class CryptoBox {
     private native static byte[] jniGetLocalFingerprint(long ptr);
     private native static CryptoSession jniInitSessionFromPreKey(long ptr, String sid, byte[] prekey) throws CryptoException;
     private native static SessionMessage jniInitSessionFromMessage(long ptr, String sid, byte[] message) throws CryptoException;
-    private native static CryptoSession jniGetSession(long ptr, String sid) throws CryptoException;
+    private native static CryptoSession jniLoadSession(long ptr, String sid) throws CryptoException;
     private native static void jniDeleteSession(long ptr, String sid) throws CryptoException;
     private native static byte[] jniCopyIdentity(long ptr) throws CryptoException;
 }

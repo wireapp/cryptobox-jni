@@ -13,14 +13,16 @@ package org.pkaboo.cryptobox;
  * <p>A <tt>CryptoSession</tt> is thread-safe.</p>
  */
 final public class CryptoSession {
+    private final long boxPtr;
     private long ptr;
     private final Object lock = new Object();
 
     public final String id;
 
-    private CryptoSession(long ptr, String id) {
-        this.ptr = ptr;
-        this.id  = id;
+    private CryptoSession(long boxPtr, long ptr, String id) {
+        this.boxPtr = boxPtr;
+        this.ptr    = ptr;
+        this.id     = id;
     }
 
     /**
@@ -31,7 +33,7 @@ final public class CryptoSession {
     public void save() throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
-            jniSave(this.ptr);
+            jniSave(this.boxPtr, this.ptr);
         }
     }
 
@@ -97,7 +99,7 @@ final public class CryptoSession {
         close();
     }
 
-    private native static void   jniSave(long ptr) throws CryptoException;
+    private native static void   jniSave(long boxPtr, long ptr) throws CryptoException;
     private native static byte[] jniEncrypt(long ptr, byte[] plaintext) throws CryptoException;
     private native static byte[] jniDecrypt(long ptr, byte[] ciphertext) throws CryptoException;
     private native static byte[] jniGetRemoteFingerprint(long ptr);
