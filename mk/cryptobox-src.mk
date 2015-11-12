@@ -1,6 +1,6 @@
-CRYPTOBOX_VERSION := v0.5.0
+CRYPTOBOX_VERSION := develop
 CRYPTOBOX         := cryptobox-$(CRYPTOBOX_VERSION)
-CRYPTOBOX_GIT_URL := git@github.com:romanb/cryptobox.git
+CRYPTOBOX_GIT_URL := git@github.com:shared-secret/cryptobox-c.git
 
 build/src/$(CRYPTOBOX):
 	mkdir -p build/src

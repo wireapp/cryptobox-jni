@@ -30,6 +30,7 @@ final public class CryptoException extends Exception {
             case  9: return Code.OUTDATED_MESSAGE;
             case 13: return Code.IDENTITY_ERROR;
             case 14: return Code.PREKEY_NOT_FOUND;
+            case 15: return Code.PANIC;
             default: return Code.UNKNOWN_ERROR;
         }
     }
@@ -113,6 +114,18 @@ final public class CryptoException extends Exception {
          * whereby the prekey corresponding to the prekey ID in the message could not be found.
          */
         PREKEY_NOT_FOUND,
+
+        /** A panic occurred. This is a last resort error raised form native code to
+         * signal a severe problem, like a violation of a critical invariant, that
+         * would otherwise have caused a crash. Client code can choose to handle
+         * these errors more gracefully, preventing the application from crashing.
+         *
+         * <p>Note that any {@link CryptoSession}s which might have been involved in a
+         * computation leading to a panic must no longer be used as their in-memory
+         * state may be corrupt. Such sessions should be closed and may be subsequently
+         * reloaded to retry the operation(s).</p>
+         */
+        PANIC,
 
         /** An unspecified error occurred. */
         UNKNOWN_ERROR
