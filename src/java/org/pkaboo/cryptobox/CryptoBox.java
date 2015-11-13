@@ -111,7 +111,7 @@ final public class CryptoBox {
     /**
      * Get the local fingerprint as a hex-encoded byte array.
      */
-    public byte[] getLocalFingerprint() {
+    public byte[] getLocalFingerprint() throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
             return jniGetLocalFingerprint(this.ptr);
@@ -335,13 +335,13 @@ final public class CryptoBox {
 
     private native static CryptoBox jniOpen(String dir) throws CryptoException;
     private native static CryptoBox jniOpenWith(String dir, byte[] id, int mode) throws CryptoException;
-    private native static void jniClose(long ptr);
     private native static PreKey jniNewLastPreKey(long ptr) throws CryptoException;
     private native static PreKey[] jniNewPreKeys(long ptr, int start, int num) throws CryptoException;
-    private native static byte[] jniGetLocalFingerprint(long ptr);
+    private native static byte[] jniGetLocalFingerprint(long ptr) throws CryptoException;
     private native static CryptoSession jniInitSessionFromPreKey(long ptr, String sid, byte[] prekey) throws CryptoException;
     private native static SessionMessage jniInitSessionFromMessage(long ptr, String sid, byte[] message) throws CryptoException;
     private native static CryptoSession jniLoadSession(long ptr, String sid) throws CryptoException;
     private native static void jniDeleteSession(long ptr, String sid) throws CryptoException;
     private native static byte[] jniCopyIdentity(long ptr) throws CryptoException;
+    private native static void jniClose(long ptr);
 }

@@ -33,7 +33,14 @@ final public class CryptoSession {
     public void save() throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
-            jniSave(this.boxPtr, this.ptr);
+            try {
+                jniSave(this.boxPtr, this.ptr);
+            } catch (CryptoException e) {
+                if (e.code == CryptoException.Code.PANIC) {
+                    this.close();
+                }
+                throw e;
+            }
         }
     }
 
@@ -46,7 +53,14 @@ final public class CryptoSession {
     public byte[] encrypt(byte[] plaintext) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
-            return jniEncrypt(this.ptr, plaintext);
+            try {
+                return jniEncrypt(this.ptr, plaintext);
+            } catch (CryptoException e) {
+                if (e.code == CryptoException.Code.PANIC) {
+                    this.close();
+                }
+                throw e;
+            }
         }
     }
 
@@ -59,17 +73,31 @@ final public class CryptoSession {
     public byte[] decrypt(byte[] ciphertext) throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
-            return jniDecrypt(this.ptr, ciphertext);
+            try {
+                return jniDecrypt(this.ptr, ciphertext);
+            } catch (CryptoException e) {
+                if (e.code == CryptoException.Code.PANIC) {
+                    this.close();
+                }
+                throw e;
+            }
         }
     }
 
     /**
      * Get the remote fingerprint as a hex-encoded byte array.
      */
-    public byte[] getRemoteFingerprint() {
+    public byte[] getRemoteFingerprint() throws CryptoException {
         synchronized (lock) {
             errorIfClosed();
-            return jniGetRemoteFingerprint(this.ptr);
+            try {
+                return jniGetRemoteFingerprint(this.ptr);
+            } catch (CryptoException e) {
+                if (e.code == CryptoException.Code.PANIC) {
+                    this.close();
+                }
+                throw e;
+            }
         }
     }
 
@@ -102,6 +130,6 @@ final public class CryptoSession {
     private native static void   jniSave(long boxPtr, long ptr) throws CryptoException;
     private native static byte[] jniEncrypt(long ptr, byte[] plaintext) throws CryptoException;
     private native static byte[] jniDecrypt(long ptr, byte[] ciphertext) throws CryptoException;
-    private native static byte[] jniGetRemoteFingerprint(long ptr);
+    private native static byte[] jniGetRemoteFingerprint(long ptr) throws CryptoException;
     private native static void   jniClose(long ptr);
 }

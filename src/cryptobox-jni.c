@@ -216,7 +216,11 @@ cboxjni_local_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
 
     CBoxVec * fp = NULL;
-    cbox_fingerprint_local(cbox, &fp);
+    CBoxResult rc = cbox_fingerprint_local(cbox, &fp);
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+        return NULL;
+    }
 
     return cboxjni_vec2arr(j_env, fp);
 }
@@ -457,7 +461,11 @@ cboxjni_remote_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
 
     CBoxVec * fp = NULL;
-    cbox_fingerprint_remote(csess, &fp);
+    CBoxResult rc = cbox_fingerprint_remote(csess, &fp);
+    if (rc != CBOX_SUCCESS) {
+        cboxjni_throw(j_env, rc);
+        return NULL;
+    }
 
     return cboxjni_vec2arr(j_env, fp);
 }
