@@ -42,12 +42,12 @@ endif
 .PHONY: compile-java
 compile-java:
 	mkdir -p build/classes
-	javac -d build/classes src/java/org/pkaboo/cryptobox/*.java
+	javac -d build/classes src/java/com/wire/cryptobox/*.java
 
 .PHONY: doc
 doc:
 	mkdir -p dist/javadoc
-	javadoc -Xdoclint:none -public -d dist/javadoc src/java/org/pkaboo/cryptobox/*.java
+	javadoc -Xdoclint:none -public -d dist/javadoc src/java/com/wire/cryptobox/*.java
 
 .PHONY: distclean
 distclean:

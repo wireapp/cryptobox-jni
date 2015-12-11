@@ -21,12 +21,12 @@ clean:
 compile: cryptobox
 	$(ANDROID_NDK_HOME)/ndk-build
 	mkdir -p build/classes
-	javac -source 1.6 -target 1.6 -d build/classes ../src/java/org/pkaboo/cryptobox/*.java
+	javac -source 1.6 -target 1.6 -d build/classes ../src/java/com/wire/cryptobox/*.java
 
 .PHONY: doc
 doc:
 	mkdir -p dist/javadoc
-	javadoc -Xdoclint:none -public -d dist/javadoc ../src/java/org/pkaboo/cryptobox/*.java
+	javadoc -Xdoclint:none -public -d dist/javadoc ../src/java/com/wire/cryptobox/*.java
 
 .PHONY: distclean
 distclean:
