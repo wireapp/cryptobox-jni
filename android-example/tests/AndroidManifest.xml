@@ -12,10 +12,10 @@
     </application>
     <!--
     This declares that this application uses the instrumentation test runner targeting
-    the package of org.pkaboo.cryptobox.  To run the tests use the command:
-    "adb shell am instrument -w org.pkaboo.cryptobox.tests/android.test.InstrumentationTestRunner"
+    the package of com.wire.cryptobox.  To run the tests use the command:
+    "adb shell am instrument -w com.wire.cryptobox.tests/android.test.InstrumentationTestRunner"
     -->
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="org.pkaboo.cryptobox"
-                     android:label="Tests for org.pkaboo.cryptobox"/>
+                     android:targetPackage="com.wire.cryptobox"
+                     android:label="Tests for com.wire.cryptobox"/>
 </manifest>
