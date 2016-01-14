@@ -1,6 +1,6 @@
 # cryptobox-jni
 
-JNI bindings for the [cryptobox](https://github.com/romanb/cryptobox) with support for cross-compilation to Android.
+JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with support for cross-compilation to Android.
 
 ## Building
 
@@ -43,7 +43,7 @@ are needed to build for Android:
       * `arm-linux-androideabi`
       * `aarch64-linux-android`
       * `i686-linux-android`
-    
+
     Typically such a compiler needs to be built from source, e.g.:
 
         ./configure \
@@ -94,8 +94,8 @@ The test project is located in the `android-example/tests` directory.
 
 ## Contribute
 
-For any problems, comments, or feedback please create an issue [here on GitHub](https://github.com/romanb/cryptobox-jni/issues).
+For any problems, comments, or feedback please create an issue [here on GitHub](https://github.com/wireapp/cryptobox-jni/issues).
 
 ## Licence
 
-This project is released under the [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/).
+This project is released under the [GNU General Public License v3.0](http://www.gnu.org/licenses/gpl-3.0.en.html).

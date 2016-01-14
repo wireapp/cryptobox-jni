@@ -1,7 +1,17 @@
-// This Source Code Form is subject to the terms of
-// the Mozilla Public License, v. 2.0. If a copy of
-// the MPL was not distributed with this file, You
-// can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright (C) 2015 Wire Swiss GmbH <support@wire.com>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef __ANDROID__
 #include <android/log.h>
@@ -473,16 +483,16 @@ cboxjni_remote_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 // Bookkeeping //////////////////////////////////////////////////////////////
 
 static JNINativeMethod cboxjni_box_methods[] = {
-    { "jniOpen"                  , "(Ljava/lang/String;)Lorg/pkaboo/cryptobox/CryptoBox;"         , (void *) cboxjni_open              },
-    { "jniOpenWith"              , "(Ljava/lang/String;[BI)Lorg/pkaboo/cryptobox/CryptoBox;"      , (void *) cboxjni_open_with         },
+    { "jniOpen"                  , "(Ljava/lang/String;)Lcom/wire/cryptobox/CryptoBox;"           , (void *) cboxjni_open              },
+    { "jniOpenWith"              , "(Ljava/lang/String;[BI)Lcom/wire/cryptobox/CryptoBox;"        , (void *) cboxjni_open_with         },
     { "jniClose"                 , "(J)V"                                                         , (void *) cboxjni_close             },
-    { "jniNewPreKeys"            , "(JII)[Lorg/pkaboo/cryptobox/PreKey;"                          , (void *) cboxjni_new_prekeys       },
-    { "jniNewLastPreKey"         , "(J)Lorg/pkaboo/cryptobox/PreKey;"                             , (void *) cboxjni_new_last_prekey   },
+    { "jniNewPreKeys"            , "(JII)[Lcom/wire/cryptobox/PreKey;"                            , (void *) cboxjni_new_prekeys       },
+    { "jniNewLastPreKey"         , "(J)Lcom/wire/cryptobox/PreKey;"                               , (void *) cboxjni_new_last_prekey   },
     { "jniGetLocalFingerprint"   , "(J)[B"                                                        , (void *) cboxjni_local_fingerprint },
     { "jniCopyIdentity"          , "(J)[B"                                                        , (void *) cboxjni_copy_identity     },
-    { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey  },
-    { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lorg/pkaboo/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message },
-    { "jniLoadSession"           , "(JLjava/lang/String;)Lorg/pkaboo/cryptobox/CryptoSession;"    , (void *) cboxjni_session_load      },
+    { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lcom/wire/cryptobox/CryptoSession;"    , (void *) cboxjni_init_from_prekey  },
+    { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lcom/wire/cryptobox/SessionMessage;"   , (void *) cboxjni_init_from_message },
+    { "jniLoadSession"           , "(JLjava/lang/String;)Lcom/wire/cryptobox/CryptoSession;"      , (void *) cboxjni_session_load      },
     { "jniDeleteSession"         , "(JLjava/lang/String;)V"                                       , (void *) cboxjni_session_delete    }
 };
 
@@ -523,22 +533,22 @@ jint JNI_OnLoad(JavaVM * vm, void * reserved) {
         return JNI_EVERSION;
     }
 
-    cboxjni_ex_class = cboxjni_find_class(j_env, "org/pkaboo/cryptobox/CryptoException");
+    cboxjni_ex_class = cboxjni_find_class(j_env, "com/wire/cryptobox/CryptoException");
     if (cboxjni_ex_class == NULL) return JNI_ERR;
 
-    cboxjni_box_class = cboxjni_find_class(j_env, "org/pkaboo/cryptobox/CryptoBox");
+    cboxjni_box_class = cboxjni_find_class(j_env, "com/wire/cryptobox/CryptoBox");
     if (cboxjni_box_class == NULL) return JNI_ERR;
 
-    cboxjni_sess_class = cboxjni_find_class(j_env, "org/pkaboo/cryptobox/CryptoSession");
+    cboxjni_sess_class = cboxjni_find_class(j_env, "com/wire/cryptobox/CryptoSession");
     if (cboxjni_sess_class == NULL) return JNI_ERR;
 
-    cboxjni_sessmsg_class = cboxjni_find_class(j_env, "org/pkaboo/cryptobox/SessionMessage");
+    cboxjni_sessmsg_class = cboxjni_find_class(j_env, "com/wire/cryptobox/SessionMessage");
     if (cboxjni_sessmsg_class == NULL) return JNI_ERR;
 
     cboxjni_bytearr_class = cboxjni_find_class(j_env, "[B");
     if (cboxjni_bytearr_class == NULL) return JNI_ERR;
 
-    cboxjni_pkbundle_class = cboxjni_find_class(j_env, "org/pkaboo/cryptobox/PreKey");
+    cboxjni_pkbundle_class = cboxjni_find_class(j_env, "com/wire/cryptobox/PreKey");
     if (cboxjni_pkbundle_class == NULL) return JNI_ERR;
 
     cboxjni_ex_ctor = cboxjni_find_method(j_env, cboxjni_ex_class, "<init>", "(I)V");
@@ -550,7 +560,7 @@ jint JNI_OnLoad(JavaVM * vm, void * reserved) {
     cboxjni_box_ctor = cboxjni_find_method(j_env, cboxjni_box_class, "<init>", "(J)V");
     if (cboxjni_box_ctor == NULL) return JNI_ERR;
 
-    cboxjni_sessmsg_ctor = cboxjni_find_method(j_env, cboxjni_sessmsg_class, "<init>", "(Lorg/pkaboo/cryptobox/CryptoSession;[B)V");
+    cboxjni_sessmsg_ctor = cboxjni_find_method(j_env, cboxjni_sessmsg_class, "<init>", "(Lcom/wire/cryptobox/CryptoSession;[B)V");
     if (cboxjni_sessmsg_ctor == NULL) return JNI_ERR;
 
     cboxjni_pkbundle_ctor = cboxjni_find_method(j_env, cboxjni_pkbundle_class, "<init>", "(I[B)V");

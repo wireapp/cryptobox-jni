@@ -14,7 +14,7 @@ compile: init
 	$(MAKE) -C ../android compile
 	mkdir -p libs
 	cp -r ../android/libs/* libs/
-	javac -target 1.6 -source 1.6 -d bin/classes ../src/java/org/pkaboo/cryptobox/*.java
+	javac -target 1.6 -source 1.6 -d bin/classes ../src/java/com/wire/cryptobox/*.java
 	ant debug
 
 install: compile
