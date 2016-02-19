@@ -118,6 +118,7 @@ public class CryptoBoxTest extends TestCase {
                               new String(helloBob, utf8),
                               new String(helloBobPlain, utf8) );
                 bob.save(); // does not remove Bob's last prekey
+                bobBox.closeSession(bob);
             }
         } catch (CryptoException ex) {
             fail(ex.toString());
