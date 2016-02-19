@@ -24,6 +24,10 @@
 
 #define CBOXJNI_TAG "CryptoBox"
 
+#if defined( __ANDROID__ ) && !defined( NDEBUG )
+#define CBOXJNI_ANDROID_DEBUG 1
+#endif
+
 // Cache ////////////////////////////////////////////////////////////////////
 
 jclass cboxjni_ex_class;
@@ -109,8 +113,8 @@ jobject cboxjni_new_prekey(JNIEnv * j_env, CBox * cbox, uint16_t id) {
 
 JNIEXPORT jobject JNICALL
 cboxjni_open(JNIEnv * j_env, jclass j_class, jstring j_dir) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Opening CryptoBox");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Opening CryptoBox");
     #endif
 
     char const * dir = (*j_env)->GetStringUTFChars(j_env, j_dir, 0);
@@ -138,8 +142,8 @@ cboxjni_open(JNIEnv * j_env, jclass j_class, jstring j_dir) {
 
 JNIEXPORT jobject JNICALL
 cboxjni_open_with(JNIEnv * j_env, jclass j_class, jstring j_dir, jbyteArray j_id, jint j_mode) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Opening CryptoBox with external identity");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Opening CryptoBox with external identity");
     #endif
 
     char const * dir = (*j_env)->GetStringUTFChars(j_env, j_dir, 0);
@@ -177,8 +181,8 @@ cboxjni_open_with(JNIEnv * j_env, jclass j_class, jstring j_dir, jbyteArray j_id
 
 JNIEXPORT void JNICALL
 cboxjni_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Closing CryptoBox");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Closing CryptoBox");
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -187,8 +191,8 @@ cboxjni_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 
 JNIEXPORT jobject JNICALL
 cboxjni_new_last_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Creating new last prekey");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Creating new last prekey");
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -198,8 +202,8 @@ cboxjni_new_last_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 
 JNIEXPORT jobjectArray JNICALL
 cboxjni_new_prekeys(JNIEnv * j_env, jclass j_class, jlong j_ptr, jint j_start, jint j_num) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Creating new ephemeral prekeys");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Creating new ephemeral prekeys");
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -237,8 +241,8 @@ cboxjni_local_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 
 JNIEXPORT jbyteArray JNICALL
 cboxjni_copy_identity(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Copying CryptoBox identity");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Copying CryptoBox identity");
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -261,8 +265,8 @@ cboxjni_init_from_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_
         return NULL;
     }
 
-    #ifdef __ANDROID__
-    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Initialising session from prekey: %s", sid);
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_print(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Initialising session from prekey: %s", sid);
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -296,8 +300,8 @@ cboxjni_init_from_message(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j
         return NULL;
     }
 
-    #ifdef __ANDROID__
-    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Intialising session from message: %s", sid);
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_print(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Intialising session from message: %s", sid);
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -341,8 +345,8 @@ cboxjni_session_load(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_sid)
         return NULL;
     }
 
-    #ifdef __ANDROID__
-    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Loading CryptoSession: %s", sid);
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_print(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Loading CryptoSession: %s", sid);
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -367,8 +371,8 @@ cboxjni_session_delete(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_si
         return;
     }
 
-    #ifdef __ANDROID__
-    __android_log_print(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Deleting CryptoSession: %s", sid);
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_print(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Deleting CryptoSession: %s", sid);
     #endif
 
     CBox * cbox = (CBox *) (intptr_t) j_ptr;
@@ -386,8 +390,8 @@ cboxjni_session_delete(JNIEnv * j_env, jclass j_class, jlong j_ptr, jstring j_si
 
 JNIEXPORT jbyteArray JNICALL
 cboxjni_session_encrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray j_plain) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Encrypting message");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Encrypting message");
     #endif
 
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
@@ -414,8 +418,8 @@ cboxjni_session_encrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray 
 
 JNIEXPORT jbyteArray JNICALL
 cboxjni_session_decrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray j_cipher) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Decrypting message");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Decrypting message");
     #endif
 
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
@@ -442,8 +446,8 @@ cboxjni_session_decrypt(JNIEnv * j_env, jclass j_class, jlong j_ptr, jbyteArray 
 
 JNIEXPORT void JNICALL
 cboxjni_session_save(JNIEnv * j_env, jclass j_class, jlong j_box_ptr, jlong j_ptr) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Saving CryptoSession");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Saving CryptoSession");
     #endif
 
     CBox        * cbox  = (CBox *) (intptr_t) j_box_ptr;
@@ -457,8 +461,8 @@ cboxjni_session_save(JNIEnv * j_env, jclass j_class, jlong j_box_ptr, jlong j_pt
 
 JNIEXPORT void JNICALL
 cboxjni_session_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
-    #ifdef __ANDROID__
-    __android_log_write(ANDROID_LOG_VERBOSE, CBOXJNI_TAG, "Closing CryptoSession");
+    #ifdef CBOXJNI_ANDROID_DEBUG
+    __android_log_write(ANDROID_LOG_DEBUG, CBOXJNI_TAG, "Closing CryptoSession");
     #endif
 
     CBoxSession * csess = (CBoxSession *) (intptr_t) j_ptr;
