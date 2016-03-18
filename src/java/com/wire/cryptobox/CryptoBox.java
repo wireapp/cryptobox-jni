@@ -19,8 +19,8 @@ import java.util.HashMap;
 
 /**
  * A <tt>CryptoBox</tt> is an opaque container of all the necessary key material
- * needed for exchanging ent-to-end encrypted messages with peers for a single,
- * logical client or device and maintains a pool of {@link CryptoSession}s for
+ * needed for exchanging end-to-end encrypted messages with peers for a single,
+ * logical client or device. It maintains a pool of {@link CryptoSession}s for
  * all remote peers.
  *
  * <p>Every cryptographic session with a peer is represented by a {@link CryptoSession}.
@@ -286,12 +286,8 @@ final public class CryptoBox {
      * If the session is currently loaded, it is automatically closed before
      * being deleted.
      *
-     * <p>Note: After a session has been deleted, further messages from the peer
-     * can no longer be decrypted. Furthermore, initialising a new session with
-     * the peer from a new prekey and sending messages will result in the peer
-     * not being able to decrypt these messages until the old session is deleted
-     * by the peer as well.
-     * </p>
+     * <p>Note: After a session has been deleted, further messages received from
+     * the peer can no longer be decrypted. </p>
      *
      * @param sid The ID of the session to delete.
      */

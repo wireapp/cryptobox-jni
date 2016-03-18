@@ -18,12 +18,19 @@ JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with supp
 
 The project can be built on OSX and most Linux distributions.
 
+> Note: It is currently necessary that the Rust compiler supports an
+> [unstable feature](https://github.com/rust-lang/rust/issues/27719)
+> to prevent unwinding across language boundaries. Unstable features
+> are supported in [nightlies](http://doc.rust-lang.org/book/nightly-rust.html)
+> or when the compiler was built from source. [Multirust](https://github.com/brson/multirust)
+> is recommended to manage Rust installations.
+
 ### Host Architecture
 
 Besides common OS-specific development tooling, the following prerequisites
 are needed to build for the host architecture:
 
-  * A Rust compiler (1.4 Beta or newer).
+  * A Rust compiler (1.6 or newer).
   * A Java compiler (1.6 or later).
 
 With that in place
@@ -50,7 +57,7 @@ are needed to build for Android:
 
   * A Java compiler (1.6 or later).
 
-  * A Rust compiler (1.4 Beta or newer) that can cross-compile to the following
+  * A Rust compiler (1.6 or newer) that can cross-compile to the following
     targets corresponding to the aforementioned NDK standalone toolchains:
       * `arm-linux-androideabi`
       * `aarch64-linux-android`
