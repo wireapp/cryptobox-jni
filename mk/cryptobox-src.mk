@@ -1,4 +1,4 @@
-CRYPTOBOX_VERSION := v0.8.3
+CRYPTOBOX_VERSION := develop
 CRYPTOBOX         := cryptobox-$(CRYPTOBOX_VERSION)
 CRYPTOBOX_GIT_URL := https://github.com/wireapp/cryptobox-c.git
 

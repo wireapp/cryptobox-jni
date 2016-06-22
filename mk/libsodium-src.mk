@@ -1,4 +1,4 @@
-LIBSODIUM_VERSION := 1.0.8
+LIBSODIUM_VERSION := 1.0.10
 LIBSODIUM         := libsodium-$(LIBSODIUM_VERSION)
 LIBSODIUM_URL     := http://download.libsodium.org/libsodium/releases/$(LIBSODIUM).tar.gz
 
