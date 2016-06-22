@@ -18,19 +18,16 @@ JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with supp
 
 The project can be built on OSX and most Linux distributions.
 
-> Note: It is currently necessary that the Rust compiler supports an
-> [unstable feature](https://github.com/rust-lang/rust/issues/27719)
-> to prevent unwinding across language boundaries. Unstable features
-> are supported in [nightlies](http://doc.rust-lang.org/book/nightly-rust.html)
-> or when the compiler was built from source. [Multirust](https://github.com/brson/multirust)
-> is recommended to manage Rust installations.
+> Note: Building from source should currently be done from `develop`.
+> The build instructions and versions mentioned below might not be
+> appropriate for the current `master` branch until the next release.
 
 ### Host Architecture
 
 Besides common OS-specific development tooling, the following prerequisites
 are needed to build for the host architecture:
 
-  * A Rust compiler (1.6 or newer).
+  * A Rust compiler (1.9 or newer).
   * A Java compiler (1.6 or later).
 
 With that in place
