@@ -71,7 +71,9 @@ cryptobox: build/lib/libcryptobox.$(LIB_TYPE) build/include/cbox.h
 
 build/lib/libcryptobox.$(LIB_TYPE): libsodium | build/src/$(CRYPTOBOX)
 	mkdir -p build/lib
-	cd build/src/$(CRYPTOBOX) && cargo rustc --lib --release -- -L ../../lib -l sodium
+	cd build/src/$(CRYPTOBOX) && \
+		PKG_CONFIG_PATH="$(CURDIR)/build/src/$(LIBSODIUM)/build/lib/pkgconfig:$$PKG_CONFIG_PATH" \
+		cargo rustc --lib --release -- -L ../../lib -l sodium
 	cp build/src/$(CRYPTOBOX)/target/release/libcryptobox.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
 # OSX name mangling
 ifeq ($(OS), darwin)
