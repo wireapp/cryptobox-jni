@@ -95,7 +95,9 @@ libsodium: build/lib/libsodium.$(LIB_TYPE)
 build/lib/libsodium.$(LIB_TYPE): build/src/$(LIBSODIUM)
 	mkdir -p build/lib
 	cd build/src/$(LIBSODIUM) && \
-	./configure --prefix="$(CURDIR)/build/src/$(LIBSODIUM)/build" && make -j3 && make install
+	./configure --prefix="$(CURDIR)/build/src/$(LIBSODIUM)/build" \
+				--disable-soname-versions \
+		&& make -j3 && make install
 	cp build/src/$(LIBSODIUM)/build/lib/libsodium.$(LIB_TYPE) build/lib/
 # OSX name mangling
 ifeq ($(OS), darwin)
