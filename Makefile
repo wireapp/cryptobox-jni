@@ -41,7 +41,7 @@ compile-native:
 .PHONY: compile-java
 compile-java:
 	mkdir -p build/classes
-	javac -d build/classes src/java/com/wire/cryptobox/*.java
+	javac -source 1.7 -target 1.7 -d build/classes src/java/com/wire/cryptobox/*.java
 
 .PHONY: doc
 doc:
@@ -57,7 +57,7 @@ distclean:
 dist: compile doc
 	mkdir -p dist/lib
 	cp build/lib/*.$(LIB_TYPE) dist/lib/
-	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes .
+	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes . -C build/lib . META-INF
 	tar -C dist -czf dist/cryptobox-jni-$(OS)-$(ARCH)-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
 
 #############################################################################
