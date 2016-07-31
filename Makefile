@@ -58,8 +58,16 @@ distclean:
 dist: compile doc
 	mkdir -p dist/lib
 	cp build/lib/*.$(LIB_TYPE) dist/lib/
-	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes . -C build/lib . META-INF
+	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes .
 	tar -C dist -czf dist/cryptobox-jni-$(OS)-$(ARCH)-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
+
+.PHONY: jar
+jar: compile
+	mkdir -p dist build/jar
+	cp -r src/META-INF/ build/jar
+	sed -i.bak s/VERSION/${VERSION}/g build/jar/META-INF/maven/com/wire/cryptobox/pom.xml
+	rm -f build/jar/META-INF/maven/com/wire/cryptobox/pom.xml.bak
+	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes . -C build/lib . -C build/jar .
 
 #############################################################################
 # cryptobox
