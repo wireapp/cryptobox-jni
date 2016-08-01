@@ -63,7 +63,7 @@ dist: compile doc
 .PHONY: jar
 jar: compile
 	mkdir -p dist build/jar
-	cp -r src/META-INF/ build/jar
+	cp -r src/META-INF/ build/jar/META-INF
 	sed -i.bak s/VERSION/${VERSION}/g build/jar/META-INF/maven/com/wire/cryptobox/pom.xml
 	rm -f build/jar/META-INF/maven/com/wire/cryptobox/pom.xml.bak
 	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes . -C build/lib . -C build/jar .
