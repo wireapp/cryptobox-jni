@@ -1,8 +1,12 @@
 package com.wire.cryptobox;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class NativeLibraryLoader {
+
+    private static Path tempDir = null;
 
     public static void loadLibrary(String libname) {
         try {
@@ -10,10 +14,11 @@ public class NativeLibraryLoader {
         } catch (UnsatisfiedLinkError ue) {
             try {
                 String filename = System.mapLibraryName(libname);
-                String[] split = filename.split("\\.(?=[^\\.]+$)");
-                if (split.length < 2) throw new UnsatisfiedLinkError("Could not extract filename from " + filename);
 
-                File temp = File.createTempFile(split[0], "." + split[split.length - 1]);
+                if (tempDir == null) {
+                    tempDir = Files.createTempDirectory("native" + System.nanoTime());
+                }
+                File tempFile = new File(tempDir.toAbsolutePath().toString(), filename);
 
                 InputStream istream = CryptoBox.class.getResourceAsStream("/" + filename);
                 if (istream == null) {
@@ -22,7 +27,7 @@ public class NativeLibraryLoader {
 
                 byte[] buffer = new byte[1024];
                 int bytes;
-                OutputStream ostream = new FileOutputStream(temp);
+                OutputStream ostream = new FileOutputStream(tempFile);
                 try {
                     while ((bytes = istream.read(buffer)) != -1) {
                         ostream.write(buffer, 0, bytes);
@@ -32,7 +37,7 @@ public class NativeLibraryLoader {
                     istream.close();
                 }
 
-                System.load(temp.getAbsolutePath());
+                System.load(tempFile.getAbsolutePath());
             } catch (IOException ie) {
                 throw new RuntimeException(ie);
             }
