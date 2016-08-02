@@ -41,7 +41,7 @@ compile-native:
 .PHONY: compile-java
 compile-java:
 	mkdir -p build/classes
-	javac -source 1.7 -target 1.7 -d build/classes src/java/com/wire/cryptobox/*.java
+	javac -d build/classes src/java/com/wire/cryptobox/*.java
 
 .PHONY: doc
 doc:
