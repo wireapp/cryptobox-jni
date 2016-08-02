@@ -61,12 +61,16 @@ dist: compile doc
 	tar -C dist -czf dist/cryptobox-jni-$(OS)-$(ARCH)-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
 
 .PHONY: jar
-jar: compile
-	mkdir -p dist build/jar
-	cp -r src/META-INF/ build/jar/META-INF
-	sed -i.bak s/VERSION/${VERSION}/g build/jar/META-INF/maven/com/wire/cryptobox/pom.xml
-	rm -f build/jar/META-INF/maven/com/wire/cryptobox/pom.xml.bak
-	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes . -C build/lib . -C build/jar .
+jar: cryptobox compile-native
+	mkdir -p dist build/maven
+	cp -r src/ build/maven
+	cd build/maven && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
+	cd build/maven && mvn clean package
+	cp build/maven/target/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar
+
+.PHONY: install
+install: jar
+	mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar -Dclassifier=$(OS)-$(ARCH)
 
 #############################################################################
 # cryptobox
