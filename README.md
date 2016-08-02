@@ -107,7 +107,11 @@ The test project is located in the `android-example/tests` directory.
 ## Build for maven repository
 
     make jar
-    mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=dist/cryptobox-jni-*.jar 
+    mvn install:install-file -Dfile=dist/*.jar -Dclassifier="${OS}-${ARCH}"
+
+Install package into local repository
+
+    make install
 
 ## Contribute
 
