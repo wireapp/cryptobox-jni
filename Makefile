@@ -55,10 +55,13 @@ distclean:
 	rm -rf dist
 
 .PHONY: dist
-dist: slim-jar doc
+dist: dist-tar dist-fat-jar
+
+.PHONY: dist-tar
+dist-tar: slim-jar doc
 	mkdir -p dist/lib
 	cp build/lib/*.$(LIB_TYPE) dist/lib/
-	tar -C dist -czf dist/cryptobox-jni-$(OS)-$(ARCH)-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
+	tar -C dist -czf dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
 
 .PHONY: slim-jar
 slim-jar: cryptobox compile-native
@@ -68,17 +71,13 @@ slim-jar: cryptobox compile-native
 	cd build/maven && mvn -Pslim-jar clean package
 	cp build/maven/target/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION).jar
 
-.PHONY: fat-jar
-fat-jar: cryptobox compile-native
+.PHONY: dist-fat-jar
+dist-fat-jar: cryptobox compile-native
 	mkdir -p dist build/maven
 	cp -r src/ build/maven
 	cd build/maven && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
 	cd build/maven && mvn -Pfat-jar clean package
 	cp build/maven/target/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar
-
-.PHONY: install
-install: fat-jar
-	mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar -Dclassifier=$(OS)-$(ARCH)
 
 #############################################################################
 # cryptobox
