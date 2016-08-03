@@ -57,11 +57,21 @@
     <profiles>
         <profile>
             <id>slim-jar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>fat-jar</id>
             <build>
                 <resources>
+                    <resource>
+                        <directory>resources</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>fatjar</include>
+                        </includes>
+                    </resource>
                     <resource>
                         <directory>../lib/</directory>
                         <includes>
