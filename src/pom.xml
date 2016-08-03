@@ -9,14 +9,6 @@
 
     <build>
         <sourceDirectory>java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>../lib/</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -61,4 +53,23 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>slim-jar</id>
+        </profile>
+        <profile>
+            <id>fat-jar</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>../lib/</directory>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
 </project>
