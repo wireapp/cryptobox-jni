@@ -116,7 +116,7 @@ Create jar with native libraries included:
 
 Install "fat" package into local repository
 
-    make install
+    mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar -Dclassifier=$(OS)-$(ARCH)
 
 ## Contribute
 
