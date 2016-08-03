@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public class NativeLibraryLoader {
 
-    private static Path tempDir = null;
+    private static File tempDir = null;
 
     public static void loadLibrary(String libname) {
         try {
@@ -16,9 +16,9 @@ public class NativeLibraryLoader {
                 String filename = System.mapLibraryName(libname);
 
                 if (tempDir == null) {
-                    tempDir = Files.createTempDirectory("native" + System.nanoTime());
+                    tempDir = createTempDirectory("native");
                 }
-                File tempFile = new File(tempDir.toAbsolutePath().toString(), filename);
+                File tempFile = new File(tempDir.getAbsolutePath(), filename);
 
                 InputStream istream = CryptoBox.class.getResourceAsStream("/" + filename);
                 if (istream == null) {
@@ -42,6 +42,17 @@ public class NativeLibraryLoader {
                 throw new RuntimeException(ie);
             }
         }
+    }
 
+    private static File createTempDirectory(String dirname) throws IOException {
+        final File temp;
+        temp = File.createTempFile(dirname, Long.toString(System.nanoTime()));
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+        return (temp);
     }
 }
