@@ -106,10 +106,15 @@ The test project is located in the `android-example/tests` directory.
 
 ## Build for maven repository
 
-    make jar
-    mvn install:install-file -Dfile=dist/*.jar -Dclassifier="${OS}-${ARCH}"
+Create jar without native libraries:
 
-Install package into local repository
+    make slim-jar
+
+Create jar with native libraries included:
+
+    make fat-jar
+
+Install "fat" package into local repository
 
     make install
 
