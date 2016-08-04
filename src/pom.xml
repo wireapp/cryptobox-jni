@@ -30,13 +30,13 @@
 
     <profiles>
         <profile>
-            <id>slim-jar</id>
+            <id>slimjar</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
         <profile>
-            <id>fat-jar</id>
+            <id>fatjar</id>
             <build>
                 <resources>
                     <resource>

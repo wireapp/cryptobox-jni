@@ -65,14 +65,14 @@ dist-tar: cryptobox compile-native dist-jar doc
 dist-jar:
 	mkdir -p dist
 	cd src && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
-	cd src && mvn -Pslim-jar clean package
+	cd src && mvn -Pslimjar clean package
 	cp build/maven/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION).jar
 
 .PHONY: dist-fatjar
 dist-fatjar: cryptobox compile-native
 	mkdir -p dist
 	cd src && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
-	cd src && mvn -Pfat-jar clean package
+	cd src && mvn -Pfatjar clean package
 	cp build/maven/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar
 
 #############################################################################
