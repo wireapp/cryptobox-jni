@@ -4,9 +4,11 @@ ARCH     := $(shell uname -m)
 ifeq ($(OS), darwin)
 LIB_TYPE := dylib
 LIB_PATH := DYLD_LIBRARY_PATH
+LIB_NAME := -install_name
 else
 LIB_TYPE := so
 LIB_PATH := LD_LIBRARY_PATH
+LIB_NAME := -soname
 endif
 
 include mk/version.mk
@@ -33,11 +35,8 @@ compile-native:
 	    -lcryptobox \
 	    -shared \
 	    -fPIC \
+	    -Wl,$(LIB_NAME),libcryptobox-jni.$(LIB_TYPE) \
 	    -o build/lib/libcryptobox-jni.$(LIB_TYPE)
-# OSX name mangling
-ifeq ($(OS), darwin)
-	install_name_tool -id "libcryptobox-jni.dylib" build/lib/libcryptobox-jni.dylib
-endif
 
 .PHONY: compile-java
 compile-java:
@@ -73,7 +72,10 @@ build/lib/libcryptobox.$(LIB_TYPE): libsodium | build/src/$(CRYPTOBOX)
 	mkdir -p build/lib
 	cd build/src/$(CRYPTOBOX) && \
 		PKG_CONFIG_PATH="$(CURDIR)/build/src/$(LIBSODIUM)/build/lib/pkgconfig:$$PKG_CONFIG_PATH" \
-		cargo rustc --lib --release -- -L ../../lib -l sodium
+		cargo rustc --lib --release -- \
+			-L ../../lib \
+			-l sodium \
+			-C link_args="-Wl,$(LIB_NAME),libcryptobox.$(LIB_TYPE)"
 	cp build/src/$(CRYPTOBOX)/target/release/libcryptobox.$(LIB_TYPE) build/lib/libcryptobox.$(LIB_TYPE)
 # OSX name mangling
 ifeq ($(OS), darwin)
