@@ -5,10 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wire.cryptobox</groupId>
     <artifactId>cryptobox-jni</artifactId>
-    <version>VERSION</version>
+    <version>0.8.2</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
+        <directory>../build/maven</directory>
         <sourceDirectory>java</sourceDirectory>
+        <outputDirectory>../build/classes</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -34,16 +40,10 @@
             <build>
                 <resources>
                     <resource>
-                        <directory>resources</directory>
-                        <filtering>true</filtering>
+                        <directory>../build/lib</directory>
+                        <targetPath>lib</targetPath>
                         <includes>
-                            <include>fatjar</include>
-                        </includes>
-                    </resource>
-                    <resource>
-                        <directory>../lib/</directory>
-                        <includes>
-                            <include>**/*</include>
+                            <include>*</include>
                         </includes>
                     </resource>
                 </resources>

@@ -40,8 +40,7 @@ compile-native:
 
 .PHONY: compile-java
 compile-java:
-	mkdir -p build/classes
-	javac -d build/classes src/java/com/wire/cryptobox/*.java
+	cd src && mvn compile
 
 .PHONY: doc
 doc:
@@ -54,29 +53,27 @@ distclean:
 	rm -rf dist
 
 .PHONY: dist
-dist: dist-tar dist-fat-jar
+dist: dist-tar dist-fatjar
 
 .PHONY: dist-tar
-dist-tar: slim-jar doc
+dist-tar: cryptobox compile-native dist-jar doc
 	mkdir -p dist/lib
 	cp build/lib/*.$(LIB_TYPE) dist/lib/
 	tar -C dist -czf dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
 
 .PHONY: slim-jar
-slim-jar: cryptobox compile-native
-	mkdir -p dist build/maven
-	cp -r src/ build/maven
-	cd build/maven && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
-	cd build/maven && mvn -Pslim-jar clean package
-	cp build/maven/target/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION).jar
+dist-jar:
+	mkdir -p dist
+	cd src && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
+	cd src && mvn -Pslim-jar clean package
+	cp build/maven/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION).jar
 
-.PHONY: dist-fat-jar
-dist-fat-jar: cryptobox compile-native
-	mkdir -p dist build/maven
-	cp -r src/ build/maven
-	cd build/maven && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
-	cd build/maven && mvn -Pfat-jar clean package
-	cp build/maven/target/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar
+.PHONY: dist-fatjar
+dist-fatjar: cryptobox compile-native
+	mkdir -p dist
+	cd src && mvn versions\:set versions\:commit -DnewVersion="$(VERSION)"
+	cd src && mvn -Pfat-jar clean package
+	cp build/maven/cryptobox-jni-$(VERSION).jar dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar
 
 #############################################################################
 # cryptobox
