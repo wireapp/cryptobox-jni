@@ -7,14 +7,14 @@ public class NativeLibraryLoader {
     private static File tempDir = null;
 
     public static void loadLibrary(String libname) {
-        if (NativeLibraryLoader.class.getResource("/fatjar") != null) {
-            loadFormJar(libname);
+        if (NativeLibraryLoader.class.getResource("/lib") != null) {
+            loadFromJar(libname);
         } else {
             System.loadLibrary(libname);
         }
     }
 
-    private static void loadFormJar(String libname) {
+    private static void loadFromJar(String libname) {
         String filename = System.mapLibraryName(libname);
 
         try {
@@ -23,7 +23,7 @@ public class NativeLibraryLoader {
             }
             File tempFile = new File(tempDir.getAbsolutePath(), filename);
 
-            InputStream istream = CryptoBox.class.getResourceAsStream("/" + filename);
+            InputStream istream = CryptoBox.class.getResourceAsStream("/lib/" + filename);
             if (istream == null) {
                 throw new FileNotFoundException("Could not find native library " + filename + " in jar.");
             }
