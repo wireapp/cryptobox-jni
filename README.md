@@ -12,7 +12,7 @@ JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with supp
 
 ## Building
 
-The project can be built on OSX and most Linux distributions.
+The project can be built on Windows, OSX and most Linux distributions.
 
 > Note: Building from source should currently be done from `develop`.
 > The build instructions and versions mentioned below might not be
@@ -85,6 +85,26 @@ With the prerequisites in place, the Android build can be run with:
 
 The distribution artifacts will be in the `android/dist` directory, which includes
 an [Android Library Archive](http://tools.android.com/tech-docs/new-build-system/aar-format) (`.aar`).
+
+## Windows
+
+You need:
+
+  * [MSYS2](http://msys2.github.io/) with MinGW-w64 toolchains
+
+  * The pkg-config from MinGW-w64 toolchain
+
+        pacman -S mingw-w64-x86_64-pkg-config
+
+  * A Java compiler (1.6 or later)
+
+  * A Rust compiler (1.6 or newer) with GNU ABI
+
+  * The `JAVA_HOME` environment variable must be set correctly for MSYS2
+
+        export JAVA_HOME="/c/Program Files/Java/jdk1.8.0_rev"
+
+  * The `PATH` environment variable must include JDK and Rust for MSYS2
 
 ## Sample Application
 
