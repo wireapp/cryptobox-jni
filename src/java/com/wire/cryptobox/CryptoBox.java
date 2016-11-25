@@ -42,7 +42,10 @@ import java.util.HashMap;
  */
 final public class CryptoBox {
     static {
-        System.loadLibrary("sodium");
+        // It's called libsodium.dll on Windows, unfortunately.
+        final String prefix = System.getProperty("os.name").toLowerCase().contains("win")
+                            ? "lib" : "";
+        System.loadLibrary(prefix + "sodium");
         System.loadLibrary("cryptobox");
         System.loadLibrary("cryptobox-jni");
     }
