@@ -2,23 +2,26 @@ SHELL    := /usr/bin/env bash
 OS       := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 ARCH     := $(shell uname -m)
 ifeq ($(OS), darwin)
-JAVA_OS    := $(OS)
-LIB_PREFIX := lib
-LIB_TYPE   := dylib
-LIB_PATH   := DYLD_LIBRARY_PATH
-LIB_NAME   := -install_name
+JAVA_OS          := $(OS)
+LIB_PATH         := DYLD_LIBRARY_PATH
+LIBCRYPTOBOX_JNI := libcryptobox-jni.dylib
+LIBCRYPTOBOX     := libcryptobox.dylib
+LIBSODIUM        := libsodium.dylib
+OPT_SONAME       := -install_name
 else ifneq ($(findstring mingw,$(OS)),)
-JAVA_OS    := win32
-LIB_PREFIX :=
-LIB_TYPE   := dll
-LIB_PATH   := LD_LIBRARY_PATH
-LIB_NAME   := -soname
+JAVA_OS          := win32
+LIB_PATH         := LD_LIBRARY_PATH
+LIBCRYPTOBOX_JNI := cryptobox-jni.dll
+LIBCRYPTOBOX     := cryptobox.dll
+LIBSODIUM        := libsodium.dll
+OPT_SONAME       := -soname
 else
-JAVA_OS    := $(OS)
-LIB_PREFIX := lib
-LIB_TYPE   := so
-LIB_PATH   := LD_LIBRARY_PATH
-LIB_NAME   := -soname
+JAVA_OS          := $(OS)
+LIB_PATH         := LD_LIBRARY_PATH
+LIBCRYPTOBOX_JNI := libcryptobox-jni.so
+LIBCRYPTOBOX     := libcryptobox.so
+LIBSODIUM        := libsodium.so
+OPT_SONAME       := -soname
 endif
 
 include mk/version.mk
@@ -29,7 +32,7 @@ all: compile
 .PHONY: clean
 clean:
 	rm -rf build/classes
-	rm -f build/lib/$(LIB_PREFIX)cryptobox-jni.$(LIB_TYPE)
+	rm -f build/lib/$(LIBCRYPTOBOX_JNI)
 
 .PHONY: compile
 compile: cryptobox compile-native compile-java
@@ -45,8 +48,8 @@ compile-native:
 	    -lcryptobox \
 	    -shared \
 	    -fPIC \
-	    -Wl,$(LIB_NAME),$(LIB_PREFIX)cryptobox-jni.$(LIB_TYPE) \
-	    -o build/lib/$(LIB_PREFIX)cryptobox-jni.$(LIB_TYPE)
+	    -Wl,$(OPT_SONAME),$(LIBCRYPTOBOX_JNI) \
+	    -o build/lib/$(LIBCRYPTOBOX_JNI)
 
 .PHONY: compile-java
 compile-java:
@@ -66,7 +69,9 @@ distclean:
 .PHONY: dist
 dist: compile doc
 	mkdir -p dist/lib
-	cp build/lib/*.$(LIB_TYPE) dist/lib/
+	cp build/lib/$(LIBSODIUM) dist/lib/
+	cp build/lib/$(LIBCRYPTOBOX) dist/lib/
+	cp build/lib/$(LIBCRYPTOBOX_JNI) dist/lib/
 	jar -cvf dist/cryptobox-jni-$(VERSION).jar -C build/classes .
 	tar -C dist -czf dist/cryptobox-jni-$(OS)-$(ARCH)-$(VERSION).tar.gz lib javadoc cryptobox-jni-$(VERSION).jar
 
@@ -76,25 +81,25 @@ dist: compile doc
 include mk/cryptobox-src.mk
 
 .PHONY: cryptobox
-cryptobox: build/lib/$(LIB_PREFIX)cryptobox.$(LIB_TYPE) build/include/cbox.h
+cryptobox: build/lib/$(LIBCRYPTOBOX) build/include/cbox.h
 
-build/lib/$(LIB_PREFIX)cryptobox.$(LIB_TYPE): libsodium | build/src/$(CRYPTOBOX)
+build/lib/$(LIBCRYPTOBOX): libsodium | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p build/lib
-	cd build/src/$(CRYPTOBOX) && \
-		PKG_CONFIG_PATH="$(CURDIR)/build/src/$(LIBSODIUM)/build/lib/pkgconfig:$$PKG_CONFIG_PATH" \
+	cd build/src/$(CRYPTOBOX_NAME) && \
+		PKG_CONFIG_PATH="$(CURDIR)/build/src/$(LIBSODIUM_NAME)/build/lib/pkgconfig:$$PKG_CONFIG_PATH" \
 		cargo rustc --lib --release -- \
 			-L ../../lib \
 			-l sodium \
-			-C link_args="-Wl,$(LIB_NAME),$(LIB_PREFIX)cryptobox.$(LIB_TYPE)"
-	cp build/src/$(CRYPTOBOX)/target/release/$(LIB_PREFIX)cryptobox.$(LIB_TYPE) build/lib/$(LIB_PREFIX)cryptobox.$(LIB_TYPE)
+			-C link_args="-Wl,$(OPT_SONAME),$(LIBCRYPTOBOX)"
+	cp build/src/$(CRYPTOBOX_NAME)/target/release/$(LIBCRYPTOBOX) build/lib/$(LIBCRYPTOBOX)
 # OSX name mangling
 ifeq ($(OS), darwin)
-	install_name_tool -id "@loader_path/$(LIB_PREFIX)cryptobox.dylib" build/lib/$(LIB_PREFIX)cryptobox.dylib
+	install_name_tool -id "@loader_path/$(LIBCRYPTOBOX)" build/lib/$(LIBCRYPTOBOX)
 endif
 
-build/include/cbox.h: | build/src/$(CRYPTOBOX)
+build/include/cbox.h: | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p build/include
-	cp build/src/$(CRYPTOBOX)/src/cbox.h build/include/
+	cp build/src/$(CRYPTOBOX_NAME)/src/cbox.h build/include/
 
 #############################################################################
 # libsodium
@@ -102,20 +107,20 @@ build/include/cbox.h: | build/src/$(CRYPTOBOX)
 include mk/libsodium-src.mk
 
 .PHONY: libsodium
-libsodium: build/lib/libsodium.$(LIB_TYPE)
+libsodium: build/lib/$(LIBSODIUM)
 
-build/lib/libsodium.$(LIB_TYPE): build/src/$(LIBSODIUM)
+build/lib/$(LIBSODIUM): build/src/$(LIBSODIUM_NAME)
 	mkdir -p build/lib
-	cd build/src/$(LIBSODIUM) && \
-	./configure --prefix="$(CURDIR)/build/src/$(LIBSODIUM)/build" \
+	cd build/src/$(LIBSODIUM_NAME) && \
+	./configure --prefix="$(CURDIR)/build/src/$(LIBSODIUM_NAME)/build" \
 				--disable-soname-versions \
 		&& make -j3 && make install
 ifneq ($(findstring mingw,$(OS)),)
-	cp build/src/$(LIBSODIUM)/build/bin/libsodium.$(LIB_TYPE) build/lib/
+	cp build/src/$(LIBSODIUM_NAME)/build/bin/$(LIBSODIUM) build/lib/
 else
-	cp build/src/$(LIBSODIUM)/build/lib/libsodium.$(LIB_TYPE) build/lib/
+	cp build/src/$(LIBSODIUM_NAME)/build/lib/$(LIBSODIUM) build/lib/
 endif
 # OSX name mangling
 ifeq ($(OS), darwin)
-	install_name_tool -id "@loader_path/libsodium.dylib" build/lib/libsodium.dylib
+	install_name_tool -id "@loader_path/$(LIBSODIUM)" build/lib/$(LIBSODIUM)
 endif
