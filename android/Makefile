@@ -79,8 +79,8 @@ include ../mk/cryptobox-src.mk
 .PHONY: cryptobox
 cryptobox: jni/armeabi-v7a/libcryptobox.so jni/x86/libcryptobox.so jni/include/cbox.h
 
-jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX)
-	cd build/src/$(CRYPTOBOX) && \
+jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_ARM}/bin" && \
 	cargo rustc --lib --release --target=arm-linux-androideabi -- \
 		-L ../../libsodium-android-armv7-a/lib \
@@ -89,10 +89,10 @@ jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX)
 		-C linker=arm-linux-androideabi-gcc \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/armeabi-v7a
-	cp build/src/$(CRYPTOBOX)/target/arm-linux-androideabi/release/libcryptobox.so jni/armeabi-v7a/libcryptobox.so
+	cp build/src/$(CRYPTOBOX_NAME)/target/arm-linux-androideabi/release/libcryptobox.so jni/armeabi-v7a/libcryptobox.so
 
-jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX)
-	cd build/src/$(CRYPTOBOX) && \
+jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86}/bin" && \
 	cargo rustc --lib --release --target=i686-linux-android -- \
 		-L ../../libsodium-android-x86/lib \
@@ -101,10 +101,10 @@ jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX)
 		-C linker=i686-linux-android-gcc \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/x86
-	cp build/src/$(CRYPTOBOX)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
+	cp build/src/$(CRYPTOBOX_NAME)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
 
-jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX)
-	cd build/src/$(CRYPTOBOX) && \
+jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_AARCH64}/bin" && \
 	cargo rustc --lib --release --target=aarch64-linux-android -- \
 		-L ../../libsodium-android-armv8-a/lib \
@@ -113,11 +113,11 @@ jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX)
 		-C linker=aarch64-linux-android-gcc \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/arm64-v8a
-	cp build/src/$(CRYPTOBOX)/target/aarch64-linux-android/release/libcryptobox.so jni/arm64-v8a/libcryptobox.so
+	cp build/src/$(CRYPTOBOX_NAME)/target/aarch64-linux-android/release/libcryptobox.so jni/arm64-v8a/libcryptobox.so
 
-jni/include/cbox.h: | build/src/$(CRYPTOBOX)
+jni/include/cbox.h: | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p jni/include
-	cp build/src/$(CRYPTOBOX)/src/cbox.h jni/include/
+	cp build/src/$(CRYPTOBOX_NAME)/src/cbox.h jni/include/
 
 #############################################################################
 # libsodium
@@ -127,8 +127,8 @@ include ../mk/libsodium-src.mk
 .PHONY: libsodium
 libsodium: jni/armeabi-v7a/libsodium.so jni/x86/libsodium.so
 
-jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM)
-	cd build/src/$(LIBSODIUM) && \
+jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
+	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -mfloat-abi=softfp -mfpu=vfpv3-d16 -mthumb -marm -march=armv7-a" && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_ARM}/bin:" && \
 	./configure --host=arm-linux-androideabi \
@@ -141,8 +141,8 @@ jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM)
 	mkdir -p jni/armeabi-v7a
 	cp build/libsodium-android-armv7-a/lib/libsodium.so jni/armeabi-v7a/
 
-jni/x86/libsodium.so: | build/src/$(LIBSODIUM)
-	cd build/src/$(LIBSODIUM) && \
+jni/x86/libsodium.so: | build/src/$(LIBSODIUM_NAME)
+	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -march=i686" && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86}/bin" && \
 	./configure --host=i686-linux-android \
@@ -155,8 +155,8 @@ jni/x86/libsodium.so: | build/src/$(LIBSODIUM)
 	mkdir -p jni/x86
 	cp build/libsodium-android-x86/lib/libsodium.so jni/x86/
 
-jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM)
-	cd build/src/$(LIBSODIUM) && \
+jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
+	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -march=armv8-a" && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_AARCH64}/bin" && \
 	./configure --host=aarch64-linux-android \
