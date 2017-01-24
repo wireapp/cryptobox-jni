@@ -2,7 +2,7 @@
 
 This repository is part of the source code of Wire. You can find more information at [wire.com](https://wire.com) or by contacting opensource@wire.com.
 
-You can find the published source code at [github.com/wireapp](https://github.com/wireapp). 
+You can find the published source code at [github.com/wireapp](https://github.com/wireapp).
 
 For licensing information, see the attached LICENSE file and the list of third-party licenses at [wire.com/legal/licenses/](https://wire.com/legal/licenses/).
 
@@ -46,7 +46,7 @@ are needed to build for Android:
 
   * A Rust compiler (1.12.1 or newer) that can cross-compile to the following
     targets corresponding to the aforementioned NDK standalone toolchains:
-      * `arm-linux-androideabi`
+      * `armv7-linux-androideabi`
       * `aarch64-linux-android`
       * `i686-linux-android`
 
@@ -54,7 +54,7 @@ are needed to build for Android:
     manage multiple Rust compiler toolchains. Using rustup, the following commands
     will install the necessary target-specific Rust binaries needed for Android:
 
-        rustup target add arm-linux-androideabi
+        rustup target add armv7-linux-androideabi
         rustup target add i686-linux-android
         rustup target add aarch64-linux-android
 
