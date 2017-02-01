@@ -1,10 +1,10 @@
-CRYPTOBOX_VERSION := v0.8.3
-CRYPTOBOX         := cryptobox-$(CRYPTOBOX_VERSION)
-CRYPTOBOX_GIT_URL := git@github.com:wireapp/cryptobox-c.git
+CRYPTOBOX_VERSION := v1.0.0
+CRYPTOBOX_NAME    := cryptobox-$(CRYPTOBOX_VERSION)
+CRYPTOBOX_GIT_URL := https://github.com/wireapp/cryptobox-c.git
 
-build/src/$(CRYPTOBOX):
+build/src/$(CRYPTOBOX_NAME):
 	mkdir -p build/src
 	cd build/src && \
-	git clone $(CRYPTOBOX_GIT_URL) $(CRYPTOBOX) && \
-	cd $(CRYPTOBOX) && \
+	git clone $(CRYPTOBOX_GIT_URL) $(CRYPTOBOX_NAME) && \
+	cd $(CRYPTOBOX_NAME) && \
 	git checkout $(CRYPTOBOX_VERSION)

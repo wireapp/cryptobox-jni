@@ -1,10 +1,10 @@
-LIBSODIUM_VERSION := 1.0.8
-LIBSODIUM         := libsodium-$(LIBSODIUM_VERSION)
-LIBSODIUM_URL     := http://download.libsodium.org/libsodium/releases/$(LIBSODIUM).tar.gz
+LIBSODIUM_VERSION := 1.0.11
+LIBSODIUM_NAME    := libsodium-$(LIBSODIUM_VERSION)
+LIBSODIUM_URL     := http://download.libsodium.org/libsodium/releases/$(LIBSODIUM_NAME).tar.gz
 
-build/src/$(LIBSODIUM):
+build/src/$(LIBSODIUM_NAME):
 	mkdir -p build/src
 	cd build/src && \
-	wget -O $(LIBSODIUM).tar.gz $(LIBSODIUM_URL) && \
-	tar -xzf $(LIBSODIUM).tar.gz && \
-	rm $(LIBSODIUM).tar.gz
+	wget -O $(LIBSODIUM_NAME).tar.gz $(LIBSODIUM_URL) && \
+	tar -xzf $(LIBSODIUM_NAME).tar.gz && \
+	rm $(LIBSODIUM_NAME).tar.gz

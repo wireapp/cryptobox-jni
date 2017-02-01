@@ -1,17 +1,23 @@
+# Wire
+
+This repository is part of the source code of Wire. You can find more information at [wire.com](https://wire.com) or by contacting opensource@wire.com.
+
+You can find the published source code at [github.com/wireapp](https://github.com/wireapp).
+
+For licensing information, see the attached LICENSE file and the list of third-party licenses at [wire.com/legal/licenses/](https://wire.com/legal/licenses/).
+
 # cryptobox-jni
 
 JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with support for cross-compilation to Android.
 
 ## Building
 
-The project can be built on OSX and most Linux distributions.
-
 ### Host Architecture
 
 Besides common OS-specific development tooling, the following prerequisites
 are needed to build for the host architecture:
 
-  * A Rust compiler (1.4 Beta or newer).
+  * A Rust compiler (1.12.1 or newer).
   * A Java compiler (1.6 or later).
 
 With that in place
@@ -38,13 +44,21 @@ are needed to build for Android:
 
   * A Java compiler (1.6 or later).
 
-  * A Rust compiler (1.4 Beta or newer) that can cross-compile to the following
+  * A Rust compiler (1.12.1 or newer) that can cross-compile to the following
     targets corresponding to the aforementioned NDK standalone toolchains:
-      * `arm-linux-androideabi`
+      * `armv7-linux-androideabi`
       * `aarch64-linux-android`
       * `i686-linux-android`
 
-    Typically such a compiler needs to be built from source, e.g.:
+    It is recommended to use [rustup](https://github.com/rust-lang-nursery/rustup.rs) to
+    manage multiple Rust compiler toolchains. Using rustup, the following commands
+    will install the necessary target-specific Rust binaries needed for Android:
+
+        rustup target add armv7-linux-androideabi
+        rustup target add i686-linux-android
+        rustup target add aarch64-linux-android
+
+    Alternatively a Rust compiler that supports the necessary targets can be built from source, e.g.:
 
         ./configure \
             --prefix=/where/to/install \
@@ -73,6 +87,26 @@ With the prerequisites in place, the Android build can be run with:
 
 The distribution artifacts will be in the `android/dist` directory, which includes
 an [Android Library Archive](http://tools.android.com/tech-docs/new-build-system/aar-format) (`.aar`).
+
+### Windows
+
+You need:
+
+  * [MSYS2](http://msys2.github.io/) with MinGW-w64 toolchains
+
+  * The pkg-config from MinGW-w64 toolchain
+
+        pacman -S mingw-w64-x86_64-pkg-config
+
+  * A Java compiler (1.6 or later)
+
+  * A Rust compiler (1.6 or newer) with GNU ABI
+
+  * The `JAVA_HOME` environment variable must be set correctly for MSYS2
+
+        export JAVA_HOME="/c/Program Files/Java/jdk1.8.0_rev"
+
+  * The `PATH` environment variable must include JDK and Rust for MSYS2
 
 ## Sample Application
 

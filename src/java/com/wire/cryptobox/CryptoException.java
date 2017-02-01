@@ -38,9 +38,13 @@ final public class CryptoException extends Exception {
             case  7: return Code.DUPLICATE_MESSAGE;
             case  8: return Code.TOO_DISTANT_FUTURE;
             case  9: return Code.OUTDATED_MESSAGE;
+            case 10: return Code.INVALID_STRING;
+            case 11: return Code.INVALID_STRING;
             case 13: return Code.IDENTITY_ERROR;
             case 14: return Code.PREKEY_NOT_FOUND;
             case 15: return Code.PANIC;
+            case 16: return Code.INIT_ERROR;
+            case 17: return Code.DEGENERATED_KEY;
             default: return Code.UNKNOWN_ERROR;
         }
     }
@@ -127,15 +131,38 @@ final public class CryptoException extends Exception {
 
         /** A panic occurred. This is a last resort error raised form native code to
          * signal a severe problem, like a violation of a critical invariant, that
-         * would otherwise have caused a crash. Client code can choose to handle
+         * would otherwise have caused a crash. Client code may choose to handle
          * these errors more gracefully, preventing the application from crashing.
-         *
-         * <p>Note that any {@link CryptoSession}s which might have been involved in a
-         * computation leading to a panic must no longer be used as their in-memory
-         * state may be corrupt. Such sessions should be closed and may be subsequently
-         * reloaded to retry the operation(s).</p>
+         * In that case, the CryptoBox involved in the panic should be closed and
+         * discarded.
          */
         PANIC,
+
+        /**
+         * Initialisation of the underlying cryptographic libraries failed.
+         * This error may only happen as a result of {@link CryptoBox#open} or
+         * {@link CryptoBox#openWith} and indicates a severe problem.
+         * Initialisation of a new CryptoBox may be retried a limited number
+         * of times upon receiving this error.
+         */
+        INIT_ERROR,
+
+        /**
+         * Unsafe key material was detected during initialisation of a session,
+         * encryption or decryption. If this error occurred as a result of
+         * {@link CryptoBox#initSessionFromPreKey}, client code may retry
+         * session initialisation a limited number of times with different prekeys.
+         * If this error occurred as a result of {@link CryptoSession#decrypt},
+         * the message should be considered invalid.
+         */
+        DEGENERATED_KEY,
+
+        /**
+         * An invalid string argument (e.g. file path or session ID) was provided.
+         * The string may either exceed a size limit or may contain illegal
+         * characters. It should be considered a programmer error.
+         */
+        INVALID_STRING,
 
         /** An unspecified error occurred. */
         UNKNOWN_ERROR
