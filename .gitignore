@@ -1,3 +1,5 @@
+.idea
+*.iml
 android/jni/*.so
 android/jni/include
 bin/

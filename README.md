@@ -126,6 +126,20 @@ Android device or emulator:
 
 The test project is located in the `android-example/tests` directory.
 
+## Build for maven repository
+
+Create jar without native libraries:
+
+    make slim-jar
+
+Create jar with native libraries included:
+
+    make fat-jar
+
+Install "fat" package into local repository
+
+    mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=dist/cryptobox-jni-$(VERSION)-$(OS)-$(ARCH).jar -Dclassifier=$(OS)-$(ARCH)
+
 ## Contribute
 
 For any problems, comments, or feedback please create an issue [here on GitHub](https://github.com/wireapp/cryptobox-jni/issues).
