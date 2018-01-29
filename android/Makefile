@@ -86,6 +86,7 @@ endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_ARM}/bin" && \
 	cargo rustc --lib --release --target=armv7-linux-androideabi -- \
+		-fsanitize=safe-stack \
 		-L ../../libsodium-android-armv7-a/lib \
 		-l sodium \
 		-C ar=arm-linux-androideabi-ar \
@@ -101,6 +102,7 @@ endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86}/bin" && \
 	cargo rustc --lib --release --target=i686-linux-android -- \
+		-fsanitize=safe-stack \
 		-L ../../libsodium-android-x86/lib \
 		-l sodium \
 		-C ar=i686-linux-android-ar \
@@ -116,6 +118,7 @@ endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_AARCH64}/bin" && \
 	cargo rustc --lib --release --target=aarch64-linux-android -- \
+		-fsanitize=safe-stack \
 		-L ../../libsodium-android-armv8-a/lib \
 		-l sodium \
 		-C ar=aarch64-linux-android-ar \

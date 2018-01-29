@@ -40,6 +40,7 @@ compile: cryptobox compile-native compile-java
 .PHONY: compile-native
 compile-native:
 	$(CC) -std=c99 -g -Wall src/cryptobox-jni.c \
+            -fstack-protector-all \	 
 	    -I"${JAVA_HOME}/include" \
 	    -I"${JAVA_HOME}/include/$(JAVA_OS)" \
 	    -Ibuild/include \
@@ -87,7 +88,7 @@ build/lib/$(LIBCRYPTOBOX): libsodium | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p build/lib
 	cd build/src/$(CRYPTOBOX_NAME) && \
 		PKG_CONFIG_PATH="$(CURDIR)/build/src/$(LIBSODIUM_NAME)/build/lib/pkgconfig:$$PKG_CONFIG_PATH" \
-		cargo rustc --lib --release -- \
+		cargo rustc --lib --release -fsanitize=safe-stack -- \
 			-L ../../lib \
 			-l sodium \
 			-C link_args="-Wl,$(OPT_SONAME),$(LIBCRYPTOBOX)"
