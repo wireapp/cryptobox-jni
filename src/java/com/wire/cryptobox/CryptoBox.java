@@ -112,11 +112,8 @@ final public class CryptoBox {
      *
      * @return The HEX encoded fingerprint.
      */
-    public byte[] getFingerprintFromPrekey(PreKey preKey) throws CryptoException {
-        synchronized (lock) {
-            errorIfClosed();
-            return jniGetFingerprintFromPrekey(preKey.data);
-        }
+    public static byte[] getFingerprintFromPrekey(PreKey preKey) throws CryptoException {
+        return jniGetFingerprintFromPrekey(preKey.data);
     }
 
     /**
