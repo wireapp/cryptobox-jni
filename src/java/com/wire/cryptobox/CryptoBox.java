@@ -108,6 +108,15 @@ final public class CryptoBox {
     }
 
     /**
+     * Get the public key fingerprint from a prekey.
+     *
+     * @return The HEX encoded fingerprint.
+     */
+    public static byte[] getFingerprintFromPrekey(PreKey preKey) throws CryptoException {
+        return jniGetFingerprintFromPrekey(preKey.data);
+    }
+
+    /**
      * Copy the long-term identity from this <tt>CryptoBox</tt>.
      *
      * @return The opaque, serialised identity to be stored in a safe place or
@@ -344,6 +353,7 @@ final public class CryptoBox {
 
     private native static CryptoBox jniOpen(String dir) throws CryptoException;
     private native static CryptoBox jniOpenWith(String dir, byte[] id, int mode) throws CryptoException;
+    private native static byte[] jniGetFingerprintFromPrekey(byte[] prekey) throws CryptoException;
     private native static PreKey jniNewLastPreKey(long ptr) throws CryptoException;
     private native static PreKey[] jniNewPreKeys(long ptr, int start, int num) throws CryptoException;
     private native static byte[] jniGetLocalFingerprint(long ptr) throws CryptoException;

@@ -189,6 +189,24 @@ cboxjni_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     cbox_close(cbox);
 }
 
+JNIEXPORT jbyteArray JNICALL
+cboxjni_get_fingerprint_from_prekey(JNIEnv * j_env, jclass j_class, jbyteArray j_prekey) {
+        size_t prekey_len = (*j_env)->GetArrayLength(j_env, j_prekey);
+        jbyte *  prekey   = (*j_env)->GetByteArrayElements(j_env, j_prekey, NULL);
+
+        CBoxVec * fp = NULL;
+        CBoxResult rc = cbox_fingerprint_prekey((uint8_t *) prekey, prekey_len, &fp);
+
+        (*j_env)->ReleaseByteArrayElements(j_env, j_prekey, prekey, JNI_ABORT);
+
+        if (rc != CBOX_SUCCESS) {
+            cboxjni_throw(j_env, rc);
+            return NULL;
+        }
+
+        return cboxjni_vec2arr(j_env, fp);
+}
+
 JNIEXPORT jobject JNICALL
 cboxjni_new_last_prekey(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
     #ifdef CBOXJNI_ANDROID_DEBUG
@@ -487,17 +505,18 @@ cboxjni_remote_fingerprint(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 // Bookkeeping //////////////////////////////////////////////////////////////
 
 static JNINativeMethod cboxjni_box_methods[] = {
-    { "jniOpen"                  , "(Ljava/lang/String;)Lcom/wire/cryptobox/CryptoBox;"           , (void *) cboxjni_open              },
-    { "jniOpenWith"              , "(Ljava/lang/String;[BI)Lcom/wire/cryptobox/CryptoBox;"        , (void *) cboxjni_open_with         },
-    { "jniClose"                 , "(J)V"                                                         , (void *) cboxjni_close             },
-    { "jniNewPreKeys"            , "(JII)[Lcom/wire/cryptobox/PreKey;"                            , (void *) cboxjni_new_prekeys       },
-    { "jniNewLastPreKey"         , "(J)Lcom/wire/cryptobox/PreKey;"                               , (void *) cboxjni_new_last_prekey   },
-    { "jniGetLocalFingerprint"   , "(J)[B"                                                        , (void *) cboxjni_local_fingerprint },
-    { "jniCopyIdentity"          , "(J)[B"                                                        , (void *) cboxjni_copy_identity     },
-    { "jniInitSessionFromPreKey" , "(JLjava/lang/String;[B)Lcom/wire/cryptobox/CryptoSession;"    , (void *) cboxjni_init_from_prekey  },
-    { "jniInitSessionFromMessage", "(JLjava/lang/String;[B)Lcom/wire/cryptobox/SessionMessage;"   , (void *) cboxjni_init_from_message },
-    { "jniLoadSession"           , "(JLjava/lang/String;)Lcom/wire/cryptobox/CryptoSession;"      , (void *) cboxjni_session_load      },
-    { "jniDeleteSession"         , "(JLjava/lang/String;)V"                                       , (void *) cboxjni_session_delete    }
+    { "jniOpen"                    , "(Ljava/lang/String;)Lcom/wire/cryptobox/CryptoBox;"         , (void *) cboxjni_open                        },
+    { "jniOpenWith"                , "(Ljava/lang/String;[BI)Lcom/wire/cryptobox/CryptoBox;"      , (void *) cboxjni_open_with                   },
+    { "jniClose"                   , "(J)V"                                                       , (void *) cboxjni_close                       },
+    { "jniGetFingerprintFromPrekey", "([B)[B"                                                     , (void *) cboxjni_get_fingerprint_from_prekey },
+    { "jniNewPreKeys"              , "(JII)[Lcom/wire/cryptobox/PreKey;"                          , (void *) cboxjni_new_prekeys                 },
+    { "jniNewLastPreKey"           , "(J)Lcom/wire/cryptobox/PreKey;"                             , (void *) cboxjni_new_last_prekey             },
+    { "jniGetLocalFingerprint"     , "(J)[B"                                                      , (void *) cboxjni_local_fingerprint           },
+    { "jniCopyIdentity"            , "(J)[B"                                                      , (void *) cboxjni_copy_identity               },
+    { "jniInitSessionFromPreKey"   , "(JLjava/lang/String;[B)Lcom/wire/cryptobox/CryptoSession;"  , (void *) cboxjni_init_from_prekey            },
+    { "jniInitSessionFromMessage"  , "(JLjava/lang/String;[B)Lcom/wire/cryptobox/SessionMessage;" , (void *) cboxjni_init_from_message           },
+    { "jniLoadSession"             , "(JLjava/lang/String;)Lcom/wire/cryptobox/CryptoSession;"    , (void *) cboxjni_session_load                },
+    { "jniDeleteSession"           , "(JLjava/lang/String;)V"                                     , (void *) cboxjni_session_delete              }
 };
 
 static JNINativeMethod cboxjni_sess_methods[] = {

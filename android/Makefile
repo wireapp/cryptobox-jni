@@ -10,12 +10,17 @@ include ../mk/version.mk
 # cf. https://github.com/alexcrichton/pkg-config-rs/blob/master/src/lib.rs#L12
 export PKG_CONFIG_ALLOW_CROSS=1
 
+# Hint for sodiumoxide to find the precompiled libsodium library
+# See the README at  https://github.com/sodiumoxide/sodiumoxide
+export SODIUM_LIB_DIR="./libs"
+
 .PHONY: all
 all: compile
 
 .PHONY: clean
 clean:
 	$(ANDROID_NDK_HOME)/ndk-build clean || true
+	rm -rf libs
 
 .PHONY: compile
 compile: cryptobox
@@ -69,7 +74,7 @@ dist/cryptobox-android-$(VERSION).aar: dist-libs dist-jar
 dist-aar: dist/cryptobox-android-$(VERSION).aar
 
 .PHONY: dist
-dist: dist-tar dist-aar
+dist: compile dist-tar dist-aar
 
 #############################################################################
 # cryptobox
