@@ -12,12 +12,12 @@ JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with supp
 
 ## Building
 
-### Host Architecture
+### Host Architecture
 
 Besides common OS-specific development tooling, the following prerequisites
 are needed to build for the host architecture:
 
-  * A Rust compiler (1.12.1 or newer).
+  * A Rust compiler (1.16.0).
   * A Java compiler (1.6 or later).
 
 With that in place
@@ -28,7 +28,7 @@ will leave a tarball in the `dist` directory containing all the binaries for
 your host architecture in the form of shared libraries, as well as a `.jar`
 file and the corresponding `javadoc` output.
 
-### Android
+### Android
 
 Besides common OS-specific development tooling, the following prerequisites
 are needed to build for Android:
@@ -44,7 +44,7 @@ are needed to build for Android:
 
   * A Java compiler (1.6 or later).
 
-  * A Rust compiler (1.12.1 or newer) that can cross-compile to the following
+  * A Rust compiler (1.16.0) that can cross-compile to the following
     targets corresponding to the aforementioned NDK standalone toolchains:
       * `armv7-linux-androideabi`
       * `aarch64-linux-android`
@@ -87,6 +87,17 @@ With the prerequisites in place, the Android build can be run with:
 
 The distribution artifacts will be in the `android/dist` directory, which includes
 an [Android Library Archive](http://tools.android.com/tech-docs/new-build-system/aar-format) (`.aar`).
+
+If [Maven](https://maven.apache.org) is installed (availble on [homebrew](https://formulae.brew.sh/formula/maven)), you can publish the aar to a your local Maven repository with the command:
+
+```
+mvn install:install-file \
+	-Dfile="<path to aar>" \
+	-DgroupId=com.wire \
+	-DartifactId=cryptobox-android \
+	-Dpackaging=aar \
+	-Dversion=<version number>
+```
 
 ### Windows
 
