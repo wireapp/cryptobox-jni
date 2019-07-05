@@ -16,6 +16,7 @@ all: compile
 .PHONY: clean
 clean:
 	$(ANDROID_NDK_HOME)/ndk-build clean || true
+	rm -rf libs
 
 .PHONY: compile
 compile: cryptobox
