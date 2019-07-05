@@ -69,7 +69,7 @@ dist/cryptobox-android-$(VERSION).aar: dist-libs dist-jar
 dist-aar: dist/cryptobox-android-$(VERSION).aar
 
 .PHONY: dist
-dist: dist-tar dist-aar
+dist: compile dist-tar dist-aar
 
 #############################################################################
 # cryptobox
