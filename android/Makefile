@@ -10,6 +10,10 @@ include ../mk/version.mk
 # cf. https://github.com/alexcrichton/pkg-config-rs/blob/master/src/lib.rs#L12
 export PKG_CONFIG_ALLOW_CROSS=1
 
+# Hint for sodiumoxide to find the precompiled libsodium library
+# See the README at  https://github.com/sodiumoxide/sodiumoxide
+export SODIUM_LIB_DIR="./libs"
+
 .PHONY: all
 all: compile
 
