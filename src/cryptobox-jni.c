@@ -191,7 +191,6 @@ cboxjni_close(JNIEnv * j_env, jclass j_class, jlong j_ptr) {
 
 JNIEXPORT jbyteArray JNICALL
 cboxjni_get_fingerprint_from_prekey(JNIEnv * j_env, jclass j_class, jbyteArray j_prekey) {
-
         size_t prekey_len = (*j_env)->GetArrayLength(j_env, j_prekey);
         jbyte *  prekey   = (*j_env)->GetByteArrayElements(j_env, j_prekey, NULL);
 
