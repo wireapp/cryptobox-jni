@@ -20,7 +20,7 @@ all: compile
 
 .PHONY: clean
 clean:
-	$(ANDROID_NDK_HOME)/ndk-build clean || true
+	$(ANDROID_NDK_HOME)/ndk-build clean &> /dev/null || true
 	rm -rf libs
 
 .PHONY: compile
@@ -40,6 +40,7 @@ distclean:
 	rm -rf dist
 	rm -rf jni/armeabi-v7a
 	rm -rf jni/arm64-v8a
+	rm -rf jni/x86_64
 	rm -rf jni/x86
 	rm -rf jni/include
 
