@@ -1,9 +1,11 @@
 SHELL   := /usr/bin/env bash
 
-ANDROID_NDK_TOOLCHAIN_ARM     ?=
-ANDROID_NDK_TOOLCHAIN_X86     ?=
-ANDROID_NDK_TOOLCHAIN_X86_64  ?=
-ANDROID_NDK_TOOLCHAIN_AARCH64 ?=
+ANDROID_NDK_HOME              ?=
+
+OS       := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+ARCH     := $(shell uname -m)
+export HOST_TAG=${OS}-${ARCH}
+export TOOLCHAIN="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/${HOST_TAG}"
 
 include ../mk/version.mk
 
@@ -157,14 +159,18 @@ include ../mk/libsodium-src.mk
 libsodium: jni/armeabi-v7a/libsodium.so jni/arm64-v8a/libsodium.so jni/x86/libsodium.so jni/x86_64/libsodium.so
 
 jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_ARM
-$(error ANDROID_NDK_TOOLCHAIN_ARM is not set)
-endif
 	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -mfloat-abi=softfp -mfpu=vfpv3-d16 -mthumb -marm -march=armv7-a" && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_ARM}/bin:" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin:" && \
+	echo "toolchain: ${TOOLCHAIN}" && \
+	export AR=${TOOLCHAIN}/bin/arm-linux-androideabi-ar && \
+	export AS=${TOOLCHAIN}/bin/arm-linux-androideabi-as && \
+	export CC=${TOOLCHAIN}/bin/armv7a-linux-androideabi16-clang && \
+	export CXX=${TOOLCHAIN}/bin/armv7a-linux-androideabi16-clang++ && \
+	export LD=${TOOLCHAIN}/bin/arm-linux-androideabi-ld && \
+	export RANLIB=${TOOLCHAIN}/bin/arm-linux-androideabi-ranlib && \
+	export STRIP=${TOOLCHAIN}/bin/arm-linux-androideabi-strip && \
 	./configure --host=arm-linux-androideabi \
-	            --with-sysroot="$(ANDROID_NDK_TOOLCHAIN_ARM)/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-armv7-a" \
 	            --disable-soname-versions \
 	            && \
@@ -174,14 +180,17 @@ endif
 	cp build/libsodium-android-armv7-a/lib/libsodium.so jni/armeabi-v7a/
 
 jni/x86/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_X86
-$(error ANDROID_NDK_TOOLCHAIN_X86 is not set)
-endif
 	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -march=i686" && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
+	export AR=${TOOLCHAIN}/bin/i686-linux-android-ar && \
+	export AS=${TOOLCHAIN}/bin/i686-linux-android-as && \
+	export CC=${TOOLCHAIN}/bin/i686-linux-android21-clang && \
+	export CXX=${TOOLCHAIN}/bin/i686-linux-android21-clang++ && \
+	export LD=${TOOLCHAIN}/bin/i686-linux-android-ld && \
+	export RANLIB=${TOOLCHAIN}/bin/i686-linux-android-ranlib && \
+	export STRIP=${TOOLCHAIN}/bin/i686-linux-android-strip && \
 	./configure --host=i686-linux-android \
-	            --with-sysroot="$(ANDROID_NDK_TOOLCHAIN_X86)/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-x86" \
 	            --disable-soname-versions \
 	            && \
@@ -191,14 +200,17 @@ endif
 	cp build/libsodium-android-x86/lib/libsodium.so jni/x86/
 
 jni/x86_64/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_X86_64
-$(error ANDROID_NDK_TOOLCHAIN_X86_64 is not set)
-endif
 	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -march=x86-64" && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86_64}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
+	export AR=${TOOLCHAIN}/bin/x86_64-linux-android-ar && \
+	export AS=${TOOLCHAIN}/bin/x86_64-linux-android-as && \
+	export CC=${TOOLCHAIN}/bin/x86_64-linux-android21-clang && \
+	export CXX=${TOOLCHAIN}/bin/x86_64-linux-android21-clang++ && \
+	export LD=${TOOLCHAIN}/bin/x86_64-linux-android-ld && \
+	export RANLIB=${TOOLCHAIN}/bin/x86_64-linux-android-ranlib && \
+	export STRIP=${TOOLCHAIN}/bin/x86_64-linux-android-strip && \
 	./configure --host=x86_64-linux-android \
-	            --with-sysroot="$(ANDROID_NDK_TOOLCHAIN_X86_64)/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-x86_64" \
 	            --disable-soname-versions \
 	            && \
@@ -208,14 +220,17 @@ endif
 	cp build/libsodium-android-x86_64/lib/libsodium.so jni/x86_64/
 
 jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_AARCH64
-$(error ANDROID_NDK_TOOLCHAIN_AARCH64 is not set)
-endif
 	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -march=armv8-a" && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_AARCH64}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
+	export AR=${TOOLCHAIN}/bin/aarch64-linux-android-ar && \
+	export AS=${TOOLCHAIN}/bin/aarch64-linux-android-as && \
+	export CC=${TOOLCHAIN}/bin/aarch64-linux-android21-clang && \
+	export CXX=${TOOLCHAIN}/bin/aarch64-linux-android21-clang++ && \
+	export LD=${TOOLCHAIN}/bin/aarch64-linux-android-ld && \
+	export RANLIB=${TOOLCHAIN}/bin/aarch64-linux-android-ranlib && \
+	export STRIP=${TOOLCHAIN}/bin/aarch64-linux-android-strip && \
 	./configure --host=aarch64-linux-android \
-	            --with-sysroot="$(ANDROID_NDK_TOOLCHAIN_AARCH64)/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-armv8-a" \
 	            --disable-soname-versions \
 	            && \
