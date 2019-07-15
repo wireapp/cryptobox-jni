@@ -37,15 +37,10 @@ are needed to build for Android:
 
   * The [Android NDK](https://developer.android.com/ndk/downloads/index.html) (`r10d` or newer).
 
-  * [NDK standalone toolchains](https://developer.android.com/ndk/guides/standalone_toolchain.html) for the following architectures:
-      * `armeabi-v7a`
-      * `arm64-v8a`
-      * `x86`
-
   * A Java compiler (1.6 or later).
 
   * A Rust compiler (1.16.0) that can cross-compile to the following
-    targets corresponding to the aforementioned NDK standalone toolchains:
+    targets corresponding to the NDK toolchains:
       * `armv7-linux-androideabi`
       * `aarch64-linux-android`
       * `i686-linux-android`
@@ -74,18 +69,6 @@ are needed to build for Android:
 
   * The `ANDROID_NDK_HOME` environment variable must be set and point to the
     home directory of the NDK installation.
-
-  * The `ANDROID_NDK_TOOLCHAIN_ARM` environment variable must be set and point
-    to the home directory of the `armeabi-v7a` standalone toolchain.
-
-  * The `ANDROID_NDK_TOOLCHAIN_X86` environment variable must be set and point
-    to the home directory of the `x86` standalone toolchain.
-
-  * The `ANDROID_NDK_TOOLCHAIN_AARCH64` environment variable must be set and point
-    to the home directory of the `arm64-v8a` standalone toolchain.
-
-  * The `ANDROID_NDK_TOOLCHAIN_X86_64` environment variable must be set and point
-    to the home directory of the `x86_64` standalone toolchain.
 
 With the prerequisites in place, the Android build can be run with:
 

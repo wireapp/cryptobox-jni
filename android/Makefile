@@ -89,41 +89,32 @@ include ../mk/cryptobox-src.mk
 cryptobox: jni/armeabi-v7a/libcryptobox.so jni/x86/libcryptobox.so jni/x86_64/libcryptobox.so jni/arm64-v8a/libcryptobox.so jni/include/cbox.h
 
 jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_ARM
-$(error ANDROID_NDK_TOOLCHAIN_ARM is not set)
-endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_ARM}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=armv7-linux-androideabi -- \
 		-L ../../libsodium-android-armv7-a/lib \
 		-l sodium \
 		-C ar=arm-linux-androideabi-ar \
-		-C linker=arm-linux-androideabi-gcc \
+		-C linker=armv7a-linux-androideabi16-clang \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/armeabi-v7a
 	cp build/src/$(CRYPTOBOX_NAME)/target/armv7-linux-androideabi/release/libcryptobox.so jni/armeabi-v7a/libcryptobox.so
 
 jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_X86
-$(error ANDROID_NDK_TOOLCHAIN_X86 is not set)
-endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=i686-linux-android -- \
 		-L ../../libsodium-android-x86/lib \
 		-l sodium \
 		-C ar=i686-linux-android-ar \
-		-C linker=i686-linux-android-gcc \
+		-C linker=i686-linux-android16-clang \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/x86
 	cp build/src/$(CRYPTOBOX_NAME)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
 
 jni/x86_64/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_X86_64
-$(error ANDROID_NDK_TOOLCHAIN_X86_64 is not set)
-endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86_64}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=x86_64-unknown-linux-gnu -- \
 		-L ../../libsodium-android-x86_64/lib \
 		-l sodium \
@@ -132,16 +123,13 @@ endif
 	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-unknown-linux-gnu/release/libcryptobox.so jni/x86_64/libcryptobox.so
 
 jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
-ifndef ANDROID_NDK_TOOLCHAIN_AARCH64
-$(error ANDROID_NDK_TOOLCHAIN_AARCH64 is not set)
-endif
 	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_AARCH64}/bin" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=aarch64-linux-android -- \
 		-L ../../libsodium-android-armv8-a/lib \
 		-l sodium \
 		-C ar=aarch64-linux-android-ar \
-		-C linker=aarch64-linux-android-gcc \
+		-C linker=aarch64-linux-android16-clang \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/arm64-v8a
 	cp build/src/$(CRYPTOBOX_NAME)/target/aarch64-linux-android/release/libcryptobox.so jni/arm64-v8a/libcryptobox.so
@@ -161,8 +149,7 @@ libsodium: jni/armeabi-v7a/libsodium.so jni/arm64-v8a/libsodium.so jni/x86/libso
 jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	cd build/src/$(LIBSODIUM_NAME) && \
 	export CFLAGS="-Os -mfloat-abi=softfp -mfpu=vfpv3-d16 -mthumb -marm -march=armv7-a" && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin:" && \
-	echo "toolchain: ${TOOLCHAIN}" && \
+	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	export AR=${TOOLCHAIN}/bin/arm-linux-androideabi-ar && \
 	export AS=${TOOLCHAIN}/bin/arm-linux-androideabi-as && \
 	export CC=${TOOLCHAIN}/bin/armv7a-linux-androideabi16-clang && \
@@ -185,8 +172,8 @@ jni/x86/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	export AR=${TOOLCHAIN}/bin/i686-linux-android-ar && \
 	export AS=${TOOLCHAIN}/bin/i686-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/i686-linux-android21-clang && \
-	export CXX=${TOOLCHAIN}/bin/i686-linux-android21-clang++ && \
+	export CC=${TOOLCHAIN}/bin/i686-linux-android16-clang && \
+	export CXX=${TOOLCHAIN}/bin/i686-linux-android16-clang++ && \
 	export LD=${TOOLCHAIN}/bin/i686-linux-android-ld && \
 	export RANLIB=${TOOLCHAIN}/bin/i686-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/i686-linux-android-strip && \
@@ -205,8 +192,8 @@ jni/x86_64/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	export AR=${TOOLCHAIN}/bin/x86_64-linux-android-ar && \
 	export AS=${TOOLCHAIN}/bin/x86_64-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/x86_64-linux-android21-clang && \
-	export CXX=${TOOLCHAIN}/bin/x86_64-linux-android21-clang++ && \
+	export CC=${TOOLCHAIN}/bin/x86_64-linux-android16-clang && \
+	export CXX=${TOOLCHAIN}/bin/x86_64-linux-android16-clang++ && \
 	export LD=${TOOLCHAIN}/bin/x86_64-linux-android-ld && \
 	export RANLIB=${TOOLCHAIN}/bin/x86_64-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/x86_64-linux-android-strip && \
@@ -225,8 +212,8 @@ jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	export AR=${TOOLCHAIN}/bin/aarch64-linux-android-ar && \
 	export AS=${TOOLCHAIN}/bin/aarch64-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/aarch64-linux-android21-clang && \
-	export CXX=${TOOLCHAIN}/bin/aarch64-linux-android21-clang++ && \
+	export CC=${TOOLCHAIN}/bin/aarch64-linux-android16-clang && \
+	export CXX=${TOOLCHAIN}/bin/aarch64-linux-android16-clang++ && \
 	export LD=${TOOLCHAIN}/bin/aarch64-linux-android-ld && \
 	export RANLIB=${TOOLCHAIN}/bin/aarch64-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/aarch64-linux-android-strip && \
