@@ -129,7 +129,7 @@ jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 		-L ../../libsodium-android-armv8-a/lib \
 		-l sodium \
 		-C ar=aarch64-linux-android-ar \
-		-C linker=aarch64-linux-android16-clang \
+		-C linker=aarch64-linux-android21-clang \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/arm64-v8a
 	cp build/src/$(CRYPTOBOX_NAME)/target/aarch64-linux-android/release/libcryptobox.so jni/arm64-v8a/libcryptobox.so
@@ -192,8 +192,8 @@ jni/x86_64/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	export AR=${TOOLCHAIN}/bin/x86_64-linux-android-ar && \
 	export AS=${TOOLCHAIN}/bin/x86_64-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/x86_64-linux-android16-clang && \
-	export CXX=${TOOLCHAIN}/bin/x86_64-linux-android16-clang++ && \
+	export CC=${TOOLCHAIN}/bin/x86_64-linux-android21-clang && \
+	export CXX=${TOOLCHAIN}/bin/x86_64-linux-android21-clang++ && \
 	export LD=${TOOLCHAIN}/bin/x86_64-linux-android-ld && \
 	export RANLIB=${TOOLCHAIN}/bin/x86_64-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/x86_64-linux-android-strip && \
@@ -212,8 +212,8 @@ jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	export AR=${TOOLCHAIN}/bin/aarch64-linux-android-ar && \
 	export AS=${TOOLCHAIN}/bin/aarch64-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/aarch64-linux-android16-clang && \
-	export CXX=${TOOLCHAIN}/bin/aarch64-linux-android16-clang++ && \
+	export CC=${TOOLCHAIN}/bin/aarch64-linux-android21-clang && \
+	export CXX=${TOOLCHAIN}/bin/aarch64-linux-android21-clang++ && \
 	export LD=${TOOLCHAIN}/bin/aarch64-linux-android-ld && \
 	export RANLIB=${TOOLCHAIN}/bin/aarch64-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/aarch64-linux-android-strip && \
