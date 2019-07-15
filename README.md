@@ -17,7 +17,7 @@ JNI bindings for the [cryptobox](https://github.com/wireapp/cryptobox) with supp
 Besides common OS-specific development tooling, the following prerequisites
 are needed to build for the host architecture:
 
-  * A Rust compiler (1.16.0).
+  * A Rust compiler (1.16.0 exactly).
   * A Java compiler (1.6 or later).
 
 With that in place
@@ -49,6 +49,7 @@ are needed to build for Android:
       * `armv7-linux-androideabi`
       * `aarch64-linux-android`
       * `i686-linux-android`
+      * `x86_64-unknown-linux-gnu`
 
     It is recommended to use [rustup](https://github.com/rust-lang-nursery/rustup.rs) to
     manage multiple Rust compiler toolchains. Using rustup, the following commands
@@ -57,6 +58,7 @@ are needed to build for Android:
         rustup target add armv7-linux-androideabi
         rustup target add i686-linux-android
         rustup target add aarch64-linux-android
+        rustup target add x86_64-unknown-linux-gnu
 
     Alternatively a Rust compiler that supports the necessary targets can be built from source, e.g.:
 
@@ -65,7 +67,8 @@ are needed to build for Android:
             --arm-linux-androideabi-ndk=/path/to/android-ndk-toolchain-armeabi-v7a \
             --aarch64-linux-android-ndk=/path/to/android-ndk-toolchain-arm64-v8a \
             --i686-linux-android-ndk=/path/to/android-ndk-toolchain-x86 \
-            --target=arm-linux-androideabi,aarch64-linux-android,i686-linux-android
+            --x86_64-linux-android-ndk=/path/to/android-ndk-toolchain-x86_64 \
+            --target=arm-linux-androideabi,aarch64-linux-android,i686-linux-android,x86_64-unknown-linux-gnu
         make -j4
         make install
 
@@ -80,6 +83,9 @@ are needed to build for Android:
 
   * The `ANDROID_NDK_TOOLCHAIN_AARCH64` environment variable must be set and point
     to the home directory of the `arm64-v8a` standalone toolchain.
+
+  * The `ANDROID_NDK_TOOLCHAIN_X86_64` environment variable must be set and point
+    to the home directory of the `x86_64` standalone toolchain.
 
 With the prerequisites in place, the Android build can be run with:
 
