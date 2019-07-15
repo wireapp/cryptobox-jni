@@ -82,7 +82,7 @@ dist: compile dist-tar dist-aar
 include ../mk/cryptobox-src.mk
 
 .PHONY: cryptobox
-cryptobox: jni/armeabi-v7a/libcryptobox.so jni/x86/libcryptobox.so jni/include/cbox.h
+cryptobox: jni/armeabi-v7a/libcryptobox.so jni/x86/libcryptobox.so jni/x86_64/libcryptobox.so jni/arm64-v8a/libcryptobox.so jni/include/cbox.h
 
 jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 ifndef ANDROID_NDK_TOOLCHAIN_ARM
@@ -114,6 +114,21 @@ endif
 	mkdir -p jni/x86
 	cp build/src/$(CRYPTOBOX_NAME)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
 
+jni/x86_64/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+ifndef ANDROID_NDK_TOOLCHAIN_X86_64
+$(error ANDROID_NDK_TOOLCHAIN_X86_64 is not set)
+endif
+	cd build/src/$(CRYPTOBOX_NAME) && \
+	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86_64}/bin" && \
+	cargo rustc --lib --release --target=x86_64-unknown-linux-gnu -- \
+		-L ../../libsodium-android-x86_64/lib \
+		-l sodium \
+		-C ar=x86_64-linux-android-ar \
+		-C linker=x86_64-linux-android-gcc \
+		-C link_args="-Wl,-soname,libcryptobox.so"
+	mkdir -p jni/x86_64
+	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-linux-android/release/libcryptobox.so jni/x86_64/libcryptobox.so
+
 jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 ifndef ANDROID_NDK_TOOLCHAIN_AARCH64
 $(error ANDROID_NDK_TOOLCHAIN_AARCH64 is not set)
@@ -139,7 +154,7 @@ jni/include/cbox.h: | build/src/$(CRYPTOBOX_NAME)
 include ../mk/libsodium-src.mk
 
 .PHONY: libsodium
-libsodium: jni/armeabi-v7a/libsodium.so jni/x86/libsodium.so
+libsodium: jni/armeabi-v7a/libsodium.so jni/arm64-v8a/libsodium.so jni/x86/libsodium.so jni/x86_64/libsodium.so
 
 jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 ifndef ANDROID_NDK_TOOLCHAIN_ARM
@@ -174,6 +189,23 @@ endif
 	make -j3 && make install
 	mkdir -p jni/x86
 	cp build/libsodium-android-x86/lib/libsodium.so jni/x86/
+
+jni/x86_64/libsodium.so: | build/src/$(LIBSODIUM_NAME)
+ifndef ANDROID_NDK_TOOLCHAIN_X86_64
+$(error ANDROID_NDK_TOOLCHAIN_X86_64 is not set)
+endif
+	cd build/src/$(LIBSODIUM_NAME) && \
+	export CFLAGS="-Os -march=x86-64" && \
+	export PATH="${PATH}:${ANDROID_NDK_TOOLCHAIN_X86_64}/bin" && \
+	./configure --host=x86_64-linux-android \
+	            --with-sysroot="$(ANDROID_NDK_TOOLCHAIN_X86_64)/sysroot" \
+	            --prefix="$(CURDIR)/build/libsodium-android-x86_64" \
+	            --disable-soname-versions \
+	            && \
+	make clean && \
+	make -j3 && make install
+	mkdir -p jni/x86_64
+	cp build/libsodium-android-x86_64/lib/libsodium.so jni/x86_64/
 
 jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 ifndef ANDROID_NDK_TOOLCHAIN_AARCH64
