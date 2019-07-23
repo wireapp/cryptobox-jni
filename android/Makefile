@@ -115,9 +115,13 @@ jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 jni/x86_64/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	cargo rustc --lib --release --target=x86_64-unknown-linux-gnu -- \
+	echo "\nEnvironment\n:" && \
+	echo `env` && \
+	cargo rustc -v --lib --release --target=x86_64-unknown-linux-gnu -- \
 		-L ../../libsodium-android-x86_64/lib \
 		-l sodium \
+		-C ar=x86_64-linux-android-ar \
+		-C linker=x86_64-linux-android21-clang \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/x86_64
 	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-unknown-linux-gnu/release/libcryptobox.so jni/x86_64/libcryptobox.so
@@ -158,6 +162,7 @@ jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export RANLIB=${TOOLCHAIN}/bin/arm-linux-androideabi-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/arm-linux-androideabi-strip && \
 	./configure --host=arm-linux-androideabi \
+	            --with-sysroot="${TOOLCHAIN}/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-armv7-a" \
 	            --disable-soname-versions \
 	            && \
@@ -178,6 +183,7 @@ jni/x86/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export RANLIB=${TOOLCHAIN}/bin/i686-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/i686-linux-android-strip && \
 	./configure --host=i686-linux-android \
+	            --with-sysroot="${TOOLCHAIN}/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-x86" \
 	            --disable-soname-versions \
 	            && \
@@ -198,6 +204,7 @@ jni/x86_64/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export RANLIB=${TOOLCHAIN}/bin/x86_64-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/x86_64-linux-android-strip && \
 	./configure --host=x86_64-linux-android \
+	            --with-sysroot="${TOOLCHAIN}/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-x86_64" \
 	            --disable-soname-versions \
 	            && \
@@ -218,6 +225,7 @@ jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	export RANLIB=${TOOLCHAIN}/bin/aarch64-linux-android-ranlib && \
 	export STRIP=${TOOLCHAIN}/bin/aarch64-linux-android-strip && \
 	./configure --host=aarch64-linux-android \
+	            --with-sysroot="${TOOLCHAIN}/sysroot" \
 	            --prefix="$(CURDIR)/build/libsodium-android-armv8-a" \
 	            --disable-soname-versions \
 	            && \
