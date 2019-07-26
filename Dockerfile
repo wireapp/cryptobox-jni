@@ -7,7 +7,7 @@ ENV PATH $PATH:/usr/local/sbin:/usr/sbin:/sbin
 ####### BASE TOOLS #######
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless unzip clang
+RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless unzip clang vim
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 ######## ANDROID #########
@@ -76,10 +76,8 @@ RUN rustup target add x86_64-linux-android
 
 ENV RUST_HOME ~/.rust
 
-WORKDIR ..
-RUN git clone https://github.com/wireapp/cryptobox-jni.git
-WORKDIR cryptobox-jni
-RUN git checkout refactor/move-to-universal-toolchain
-WORKDIR android
+WORKDIR /home/rust
+RUN git clone https://github.com/wireapp/cryptobox-jni.git --branch refactor/move-to-universal-toolchain --single-branch
+WORKDIR cryptobox-jni/android
 # RUN make dist
 
