@@ -81,5 +81,5 @@ RUN git clone https://github.com/wireapp/cryptobox-jni.git
 WORKDIR cryptobox-jni
 RUN git checkout refactor/move-to-universal-toolchain
 WORKDIR android
-RUN make dist
+# RUN make dist
 

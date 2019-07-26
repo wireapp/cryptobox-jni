@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$1" = "clean" ]]; then
+if [[ "$1" = "--clean" ]]; then
 	# clean stopped containers
 	docker rm `docker ps -aq`
 
