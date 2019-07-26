@@ -117,14 +117,14 @@ jni/x86_64/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	echo "\nEnvironment\n:" && \
 	echo `env` && \
-	cargo rustc -v --lib --release --target=x86_64-unknown-linux-gnu -- \
+	cargo rustc -v --lib --release --target=x86_64-linux-android -- \
 		-L ../../libsodium-android-x86_64/lib \
 		-l sodium \
 		-C ar=x86_64-linux-android-ar \
 		-C linker=x86_64-linux-android21-clang \
 		-C link_args="-Wl,-soname,libcryptobox.so"
 	mkdir -p jni/x86_64
-	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-unknown-linux-gnu/release/libcryptobox.so jni/x86_64/libcryptobox.so
+	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-linux-android/release/libcryptobox.so jni/x86_64/libcryptobox.so
 
 jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
