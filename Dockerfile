@@ -21,17 +21,7 @@ RUN chmod -R 755 $ANDROID_HOME
 RUN echo y | android update sdk --no-ui --all --filter tools
 RUN echo y | android update sdk --no-ui --all --filter platform-tools
 RUN echo y | android update sdk --no-ui --all --filter extra-android-support
-RUN echo y | android update sdk --no-ui --all --filter android-23
-RUN echo y | android update sdk --no-ui --all --filter android-24
-RUN echo y | android update sdk --no-ui --all --filter android-25
-RUN echo y | android update sdk --no-ui --all --filter android-26
 RUN echo y | android update sdk --no-ui --all --filter android-27
-RUN echo y | android update sdk --no-ui --all --filter build-tools-23.0.3
-RUN echo y | android update sdk --no-ui --all --filter build-tools-24.0.0
-RUN echo y | android update sdk --no-ui --all --filter build-tools-24.0.1
-RUN echo y | android update sdk --no-ui --all --filter build-tools-24.0.3
-RUN echo y | android update sdk --no-ui --all --filter build-tools-26.0.0
-RUN echo y | android update sdk --no-ui --all --filter build-tools-26.0.1
 RUN echo y | android update sdk --no-ui --all --filter build-tools-27.0.3
 RUN echo y | android update sdk --no-ui --all --filter extra-android-m2repository
 RUN echo y | android update sdk --no-ui --all --filter extra-google-m2repository
@@ -71,7 +61,6 @@ RUN rustup default 1.36.0
 RUN rustup target add armv7-linux-androideabi
 RUN rustup target add i686-linux-android
 RUN rustup target add aarch64-linux-android
-RUN rustup target add arm-linux-androideabi
 RUN rustup target add x86_64-linux-android
 
 ENV RUST_HOME ~/.rust
