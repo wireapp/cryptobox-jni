@@ -7,7 +7,7 @@ ENV PATH $PATH:/usr/local/sbin:/usr/sbin:/sbin
 ####### BASE TOOLS #######
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless unzip clang vim
+RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless unzip clang vim pkg-config
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 ######## ANDROID #########
