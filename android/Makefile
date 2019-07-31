@@ -88,7 +88,7 @@ include ../mk/cryptobox-src.mk
 .PHONY: cryptobox
 cryptobox: jni/armeabi-v7a/libcryptobox.so jni/x86/libcryptobox.so jni/x86_64/libcryptobox.so jni/arm64-v8a/libcryptobox.so jni/include/cbox.h
 
-jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+jni/armeabi-v7a/libcryptobox.so: libsodium-armeabi-v7a | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=armv7-linux-androideabi -- \
@@ -100,7 +100,7 @@ jni/armeabi-v7a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p jni/armeabi-v7a
 	cp build/src/$(CRYPTOBOX_NAME)/target/armv7-linux-androideabi/release/libcryptobox.so jni/armeabi-v7a/libcryptobox.so
 
-jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+jni/x86/libcryptobox.so: libsodium-x86 | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=i686-linux-android -- \
@@ -112,7 +112,7 @@ jni/x86/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p jni/x86
 	cp build/src/$(CRYPTOBOX_NAME)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
 
-jni/x86_64/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+jni/x86_64/libcryptobox.so: libsodium-x86_64 | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc -v --lib --release --target=x86_64-linux-android -- \
@@ -124,7 +124,7 @@ jni/x86_64/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p jni/x86_64
 	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-linux-android/release/libcryptobox.so jni/x86_64/libcryptobox.so
 
-jni/arm64-v8a/libcryptobox.so: libsodium | build/src/$(CRYPTOBOX_NAME)
+jni/arm64-v8a/libcryptobox.so: libsodium-arm64-v8a | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
 	cargo rustc --lib --release --target=aarch64-linux-android -- \
@@ -144,6 +144,18 @@ jni/include/cbox.h: | build/src/$(CRYPTOBOX_NAME)
 # libsodium
 
 include ../mk/libsodium-src.mk
+
+.PHONY: libsodium-armeabi-v7a
+libsodium-armeabi-v7a: jni/armeabi-v7a/libsodium.so
+
+.PHONY: libsodium-aarch64
+libsodium-aarch64: jni/arm64-v8a/libsodium.so
+
+.PHONY: libsodium-x86
+libsodium-x86: jni/x86/libsodium.so
+
+.PHONY: libsodium-x86_64
+libsodium-x86_64: jni/x86_64/libsodium.so
 
 .PHONY: libsodium
 libsodium: jni/armeabi-v7a/libsodium.so jni/arm64-v8a/libsodium.so jni/x86/libsodium.so jni/x86_64/libsodium.so
