@@ -7,7 +7,8 @@ ENV PATH $PATH:/usr/local/sbin:/usr/sbin:/sbin
 ####### BASE TOOLS #######
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless unzip clang vim pkg-config
+RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless \
+    unzip clang vim pkg-config strace less
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 ######## ANDROID #########
@@ -67,5 +68,5 @@ ENV RUST_HOME ~/.rust
 WORKDIR /home/rust
 RUN git clone https://github.com/wireapp/cryptobox-jni.git --branch refactor/move-to-universal-toolchain --single-branch
 WORKDIR cryptobox-jni/android
-# RUN make dist
+RUN make dist || echo "FAILED TO BUILD!!"
 
