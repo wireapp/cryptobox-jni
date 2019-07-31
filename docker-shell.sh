@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run -it --rm -v $(pwd):/root wire/cryptobox-jni
+docker run --security-opt seccomp:unconfined -it --rm -v $(pwd):/root wire/cryptobox-jni
