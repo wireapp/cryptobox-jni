@@ -7,4 +7,4 @@ build/src/$(CRYPTOBOX_NAME):
 	cd build/src && \
 	git clone $(CRYPTOBOX_GIT_URL) $(CRYPTOBOX_NAME) && \
 	cd $(CRYPTOBOX_NAME) && \
-	git checkout $(CRYPTOBOX_VERSION)
+	git checkout test_bumping_libs
