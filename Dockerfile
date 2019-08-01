@@ -8,7 +8,7 @@ ENV PATH $PATH:/usr/local/sbin:/usr/sbin:/sbin
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless \
-    unzip clang vim pkg-config strace less
+    unzip clang vim pkg-config strace less g++-multilib libc6-dev-i386
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 ######## ANDROID #########
@@ -70,5 +70,5 @@ ENV PKG_CONFIG_PATH=/home/rust/cryptobox-jni/android/build/libsodium-android-arm
 WORKDIR /home/rust
 RUN git clone https://github.com/wireapp/cryptobox-jni.git --branch refactor/move-to-universal-toolchain --single-branch
 WORKDIR cryptobox-jni/android
-RUN make dist || echo "FAILED TO BUILD!!"
+# RUN make dist || echo "FAILED TO BUILD!!"
 
