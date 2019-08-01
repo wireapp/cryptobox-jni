@@ -65,6 +65,8 @@ RUN rustup target add x86_64-linux-android
 
 ENV RUST_HOME ~/.rust
 
+ENV PKG_CONFIG_PATH=/home/rust/cryptobox-jni/android/build/libsodium-android-armv7-a/lib/pkgconfig
+
 WORKDIR /home/rust
 RUN git clone https://github.com/wireapp/cryptobox-jni.git --branch refactor/move-to-universal-toolchain --single-branch
 WORKDIR cryptobox-jni/android
