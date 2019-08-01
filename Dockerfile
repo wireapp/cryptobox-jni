@@ -20,7 +20,6 @@ ENV ANDROID_HOME /opt/android-sdk-linux
 ENV PATH $ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
 RUN echo y | android update sdk --no-ui --all --filter tools
 RUN echo y | android update sdk --no-ui --all --filter platform-tools
-RUN echo y | android update sdk --no-ui --all --filter extra-android-support
 RUN echo y | android update sdk --no-ui --all --filter android-27
 RUN echo y | android update sdk --no-ui --all --filter build-tools-27.0.3
 RUN echo y | android update sdk --no-ui --all --filter extra-android-m2repository
