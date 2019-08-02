@@ -1,4 +1,4 @@
-FROM omnijar/rust:linux-musl
+FROM rust
 
 USER root
 
@@ -52,7 +52,7 @@ ENV PATH ${PATH}:${ANDROID_NDK_HOME}
 # ENV PATH $GRADLE_HOME/bin:$PATH
 
 ######### RUST ############
-
+RUN useradd rust -m
 USER rust
 
 RUN rustup install 1.36.0
@@ -67,7 +67,7 @@ ENV RUST_HOME ~/.rust
 ENV PKG_CONFIG_PATH=/home/rust/cryptobox-jni/android/build/libsodium-android-armv7-a/lib/pkgconfig
 
 WORKDIR /home/rust
-RUN git clone https://github.com/wireapp/cryptobox-jni.git --branch refactor/move-to-universal-toolchain --single-branch
+COPY --chown=rust . cryptobox-jni
 WORKDIR cryptobox-jni/android
-# RUN make dist || echo "FAILED TO BUILD!!"
+RUN make dist || echo "FAILED TO BUILD!!"
 

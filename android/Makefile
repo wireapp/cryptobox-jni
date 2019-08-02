@@ -86,55 +86,20 @@ dist: compile dist-tar dist-aar
 include ../mk/cryptobox-src.mk
 
 .PHONY: cryptobox
-cryptobox: jni/armeabi-v7a/libcryptobox.so jni/x86/libcryptobox.so jni/x86_64/libcryptobox.so jni/arm64-v8a/libcryptobox.so jni/include/cbox.h
+cryptobox: jni/armeabi-v7a/libcryptobox.so jni/include/cbox.h
 
 jni/armeabi-v7a/libcryptobox.so: libsodium-armeabi-v7a | build/src/$(CRYPTOBOX_NAME)
 	cd build/src/$(CRYPTOBOX_NAME) && \
 	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
+	export SODIUM_LIB_DIR=../../libsodium-android-armv7-a/lib && \
+	export SODIUM_SHARED=1 && \
 	cargo rustc --lib --release --target=armv7-linux-androideabi -- \
-		-L ../../libsodium-android-armv7-a/lib \
-		-l sodium \
-		-C ar=arm-linux-androideabi-ar \
-		-C linker=armv7a-linux-androideabi16-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
+	               -C ar=arm-linux-androideabi-ar \
+	               -C linker=armv7a-linux-androideabi16-clang 
 	mkdir -p jni/armeabi-v7a
 	cp build/src/$(CRYPTOBOX_NAME)/target/armv7-linux-androideabi/release/libcryptobox.so jni/armeabi-v7a/libcryptobox.so
 
-jni/x86/libcryptobox.so: libsodium-x86 | build/src/$(CRYPTOBOX_NAME)
-	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	cargo rustc --lib --release --target=i686-linux-android -- \
-		-L ../../libsodium-android-x86/lib \
-		-l sodium \
-		-C ar=i686-linux-android-ar \
-		-C linker=i686-linux-android16-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
-	mkdir -p jni/x86
-	cp build/src/$(CRYPTOBOX_NAME)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
 
-jni/x86_64/libcryptobox.so: libsodium-x86_64 | build/src/$(CRYPTOBOX_NAME)
-	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	cargo rustc -v --lib --release --target=x86_64-linux-android -- \
-		-L ../../libsodium-android-x86_64/lib \
-		-l sodium \
-		-C ar=x86_64-linux-android-ar \
-		-C linker=x86_64-linux-android21-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
-	mkdir -p jni/x86_64
-	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-linux-android/release/libcryptobox.so jni/x86_64/libcryptobox.so
-
-jni/arm64-v8a/libcryptobox.so: libsodium-arm64-v8a | build/src/$(CRYPTOBOX_NAME)
-	cd build/src/$(CRYPTOBOX_NAME) && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	cargo rustc --lib --release --target=aarch64-linux-android -- \
-		-L ../../libsodium-android-armv8-a/lib \
-		-l sodium \
-		-C ar=aarch64-linux-android-ar \
-		-C linker=aarch64-linux-android21-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
-	mkdir -p jni/arm64-v8a
-	cp build/src/$(CRYPTOBOX_NAME)/target/aarch64-linux-android/release/libcryptobox.so jni/arm64-v8a/libcryptobox.so
 
 jni/include/cbox.h: | build/src/$(CRYPTOBOX_NAME)
 	mkdir -p jni/include
@@ -148,17 +113,8 @@ include ../mk/libsodium-src.mk
 .PHONY: libsodium-armeabi-v7a
 libsodium-armeabi-v7a: jni/armeabi-v7a/libsodium.so
 
-.PHONY: libsodium-aarch64
-libsodium-aarch64: jni/arm64-v8a/libsodium.so
-
-.PHONY: libsodium-x86
-libsodium-x86: jni/x86/libsodium.so
-
-.PHONY: libsodium-x86_64
-libsodium-x86_64: jni/x86_64/libsodium.so
-
 .PHONY: libsodium
-libsodium: jni/armeabi-v7a/libsodium.so jni/arm64-v8a/libsodium.so jni/x86/libsodium.so jni/x86_64/libsodium.so
+libsodium: jni/armeabi-v7a/libsodium.sox
 
 jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	cd build/src/$(LIBSODIUM_NAME) && \
@@ -181,65 +137,3 @@ jni/armeabi-v7a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
 	mkdir -p jni/armeabi-v7a
 	cp build/libsodium-android-armv7-a/lib/libsodium.so jni/armeabi-v7a/
 
-jni/x86/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-	cd build/src/$(LIBSODIUM_NAME) && \
-	export CFLAGS="-Os -march=i686" && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	export AR=${TOOLCHAIN}/bin/i686-linux-android-ar && \
-	export AS=${TOOLCHAIN}/bin/i686-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/i686-linux-android16-clang && \
-	export CXX=${TOOLCHAIN}/bin/i686-linux-android16-clang++ && \
-	export LD=${TOOLCHAIN}/bin/i686-linux-android-ld && \
-	export RANLIB=${TOOLCHAIN}/bin/i686-linux-android-ranlib && \
-	export STRIP=${TOOLCHAIN}/bin/i686-linux-android-strip && \
-	./configure --host=i686-linux-android \
-	            --with-sysroot="${TOOLCHAIN}/sysroot" \
-	            --prefix="$(CURDIR)/build/libsodium-android-x86" \
-	            --disable-soname-versions \
-	            && \
-	make clean && \
-	make -j3 && make install
-	mkdir -p jni/x86
-	cp build/libsodium-android-x86/lib/libsodium.so jni/x86/
-
-jni/x86_64/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-	cd build/src/$(LIBSODIUM_NAME) && \
-	export CFLAGS="-Os -march=x86-64" && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	export AR=${TOOLCHAIN}/bin/x86_64-linux-android-ar && \
-	export AS=${TOOLCHAIN}/bin/x86_64-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/x86_64-linux-android21-clang && \
-	export CXX=${TOOLCHAIN}/bin/x86_64-linux-android21-clang++ && \
-	export LD=${TOOLCHAIN}/bin/x86_64-linux-android-ld && \
-	export RANLIB=${TOOLCHAIN}/bin/x86_64-linux-android-ranlib && \
-	export STRIP=${TOOLCHAIN}/bin/x86_64-linux-android-strip && \
-	./configure --host=x86_64-linux-android \
-	            --with-sysroot="${TOOLCHAIN}/sysroot" \
-	            --prefix="$(CURDIR)/build/libsodium-android-x86_64" \
-	            --disable-soname-versions \
-	            && \
-	make clean && \
-	make -j3 && make install
-	mkdir -p jni/x86_64
-	cp build/libsodium-android-x86_64/lib/libsodium.so jni/x86_64/
-
-jni/arm64-v8a/libsodium.so: | build/src/$(LIBSODIUM_NAME)
-	cd build/src/$(LIBSODIUM_NAME) && \
-	export CFLAGS="-Os -march=armv8-a" && \
-	export PATH="${PATH}:${TOOLCHAIN}/bin" && \
-	export AR=${TOOLCHAIN}/bin/aarch64-linux-android-ar && \
-	export AS=${TOOLCHAIN}/bin/aarch64-linux-android-as && \
-	export CC=${TOOLCHAIN}/bin/aarch64-linux-android21-clang && \
-	export CXX=${TOOLCHAIN}/bin/aarch64-linux-android21-clang++ && \
-	export LD=${TOOLCHAIN}/bin/aarch64-linux-android-ld && \
-	export RANLIB=${TOOLCHAIN}/bin/aarch64-linux-android-ranlib && \
-	export STRIP=${TOOLCHAIN}/bin/aarch64-linux-android-strip && \
-	./configure --host=aarch64-linux-android \
-	            --with-sysroot="${TOOLCHAIN}/sysroot" \
-	            --prefix="$(CURDIR)/build/libsodium-android-armv8-a" \
-	            --disable-soname-versions \
-	            && \
-	make clean && \
-	make -j3 && make install
-	mkdir -p jni/arm64-v8a
-	cp build/libsodium-android-armv8-a/lib/libsodium.so jni/arm64-v8a/
