@@ -7,8 +7,24 @@ ENV PATH $PATH:/usr/local/sbin:/usr/sbin:/sbin
 ####### BASE TOOLS #######
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install -qqy --no-install-recommends git wget build-essential gcc software-properties-common openjdk-8-jre-headless \
-    unzip clang vim pkg-config strace less g++-multilib libc6-dev-i386
+RUN apt-get install -qqy --no-install-recommends \
+	git \
+	wget \
+	build-essential \
+	gcc \
+	software-properties-common \
+	unzip \
+	clang \
+	vim \
+	pkg-config \
+	strace \
+	less \
+	g++-multilib \
+	libc6-dev-i386 \
+	sudo \
+	openjdk-8-jdk-headless \
+	openjdk-8-jre-headless
+	
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 ######## ANDROID #########
@@ -66,6 +82,13 @@ ENV RUST_HOME ~/.rust
 
 ENV PKG_CONFIG_PATH=/home/rust/cryptobox-jni/android/build/libsodium-android-armv7-a/lib/pkgconfig
 
+######### ADDITIONAL TOOLS ############
+USER root
+RUN apt-get install -qqy --no-install-recommends \
+	zip
+USER rust
+
+######### Build ##############
 WORKDIR /home/rust
 COPY --chown=rust . cryptobox-jni
 WORKDIR cryptobox-jni/android
