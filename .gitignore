@@ -9,4 +9,5 @@ libs/
 obj/
 build/
 dist/
+output/
 local.properties
