@@ -34,15 +34,7 @@ mvn install:install-file \
 ```
 
 #### Bintray
-In order to publish the binary to Bintray, you need to install the JFrog CLI (`jfrog-cli-go`) tool.
-
-- Create a version using `jfrog` CLI
-- Upload files to that version using the `jfrog` CLI. E.g:
-```
-/usr/local/bin/jfrog bt u "cryptobox-android-1.1.1.*" \
-	"wire-android/releases/cryptobox-android/1.1.1" \
-	"com/wire/cryptobox-android/1.1.1/"
-```
+In order to publish the binary to Bintray, you need to install the JFrog CLI (`jfrog-cli-go`), configure the credentials and then run `publish.sh`
 
 ## Sample Application
 
