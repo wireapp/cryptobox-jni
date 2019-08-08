@@ -20,6 +20,20 @@ Once the script is completed, you will find the result of the compilation copied
 
 ### Publishing
 
+#### Locally
+
+If [Maven](https://maven.apache.org) is installed (availble on [homebrew](https://formulae.brew.sh/formula/maven)), you can publish the aar to a your local Maven repository with the command:
+
+```
+mvn install:install-file \
+	-Dfile="<path to aar>" \
+	-DgroupId=com.wire \
+	-DartifactId=cryptobox-android \
+	-Dpackaging=aar \
+	-Dversion=<version number>
+```
+
+#### Bintray
 In order to publish the binary to Bintray, you need to install the JFrog CLI (`jfrog-cli-go`) tool.
 
 - Create a version using `jfrog` CLI
