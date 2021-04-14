@@ -11,3 +11,11 @@ build/
 dist/
 output/
 local.properties
+*DS_Store*
+*.idea*
+android/.gradle
+android/*.aar
+android/*.pom
+android/*.gz
+android/*.iml
+android/*.properties

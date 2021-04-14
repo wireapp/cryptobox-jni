@@ -1,0 +1,123 @@
+/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+apply plugin: "java"
+apply plugin: "groovy"
+apply plugin: "maven"
+apply plugin: "signing"
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+def uploadToSonatypeRepository = hasProperty('sonatypeUsername')
+
+/*
+You will need a file gradle.properties in the same folder as this build.gradle.
+In the file you need the following properties:
+sonatypeUsername=<Your username on the Sonatype Nexus website>
+sonatypePassword=<Your password on the Sonatype Nexus website; NOT the PGP password>
+
+signing.keyId=<the short key id (last 8 characters of the long one)>
+signing.password=<the PGP password>
+signing.secretKeyRingFile=<a path the secret key ring file; you can generate it with `gpg --keyring secring.gpg --export-secret-keys`>
+*/
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            if (uploadToSonatypeRepository) {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                pom.project {
+                    name 'cryptobox-android'
+                    packaging 'aar'
+                    groupId 'com.wire'
+                    artifactId 'cryptobox-android'
+                    version '1.1.2'
+                    description 'cryptobox-android'
+                    url 'https://github.com/wireapp/cryptobox-jni'
+
+                    scm {
+                        connection 'scm:git:git://wireapp/cryptobox-jni.git'
+                        developerConnection 'scm:git:ssh://wireapp/cryptobox-jni.git'
+                        url 'http://github.com/wireapp/cryptobox-jni'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'makingthematrix'
+                            name = 'Maciej Gorywoda'
+                            email = 'maciej.gorywoda@wire.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+    from groovydoc.destinationDir
+    classifier = "javadoc"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = "sources"
+}
+
+artifacts {
+    archives jar
+    archives groovydocJar
+    archives sourceJar
+}
+
+signing {
+    if (uploadToSonatypeRepository) {
+        sign configurations.archives
+    }
+}
