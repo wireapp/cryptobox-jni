@@ -5,9 +5,9 @@ USER root
 ENV PATH $PATH:/usr/local/sbin:/usr/sbin:/sbin
 
 ####### BASE TOOLS #######
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -qqy --no-install-recommends \
+RUN apt update
+RUN apt upgrade -y
+RUN apt install -qqy --no-install-recommends \
 	git \
 	wget \
 	build-essential \
@@ -21,11 +21,11 @@ RUN apt-get install -qqy --no-install-recommends \
 	less \
 	g++-multilib \
 	libc6-dev-i386 \
-	sudo \
-	openjdk-8-jdk-headless \
-	openjdk-8-jre-headless
-	
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+	sudo
+
+RUN apt install -qqy --no-install-recommends openjdk-11-jre-headless openjdk-11-jdk-headless
+
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 ######## ANDROID #########
 

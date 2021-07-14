@@ -5,6 +5,6 @@ LIBSODIUM_URL     := http://download.libsodium.org/libsodium/releases/$(LIBSODIU
 build/src/$(LIBSODIUM_NAME):
 	mkdir -p build/src
 	cd build/src && \
-	wget -O $(LIBSODIUM_NAME).tar.gz $(LIBSODIUM_URL) && \
+	curl -LO $(LIBSODIUM_URL) && \
 	tar -xzf $(LIBSODIUM_NAME).tar.gz && \
 	rm $(LIBSODIUM_NAME).tar.gz

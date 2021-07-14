@@ -70,11 +70,23 @@ dist/cryptobox-android-$(VERSION).aar: dist-libs dist-jar
 	cd dist/aar && zip -r ../cryptobox-android-$(VERSION).aar *
 	rm -rf dist/aar
 
+dist/cryptobox-android-$(VERSION)-sources.jar:
+	jar -cvf dist/cryptobox-android-$(VERSION)-sources.jar -C ../src/java .
+
+dist/cryptobox-android-$(VERSION)-javadoc.jar: doc
+	jar -cvf dist/cryptobox-android-$(VERSION)-javadoc.jar -C dist/javadoc .
+
 .PHONY: dist-aar
 dist-aar: dist/cryptobox-android-$(VERSION).aar
 
+.PHONY: dist-sources
+dist-sources: dist/cryptobox-android-$(VERSION)-sources.jar
+
+.PHONY: dist-javadoc
+dist-javadoc: dist/cryptobox-android-$(VERSION)-javadoc.jar
+
 .PHONY: dist
-dist: compile dist-tar dist-aar
+dist: compile dist-tar dist-aar dist-sources dist-javadoc
 
 #############################################################################
 # cryptobox
