@@ -6,7 +6,6 @@
     <packaging>aar</packaging>
     <description>cryptobox-android</description>
     <version>%%VERSION%%</version>
-	<packaging>aar</packaging>
     <licenses>
         <license>
             <name>GPL-3.0</name>
