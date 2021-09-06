@@ -3,10 +3,18 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wire</groupId>
     <artifactId>cryptobox-android</artifactId>
-    <packaging>aar</packaging>
     <description>cryptobox-android</description>
     <version>%%VERSION%%</version>
 	<packaging>aar</packaging>
+	<url>https://github.com/wireapp/cryptobox-jni</url>
+
+	<scm>
+        <connection>scm:git:git://github.com/wireapp/cryptobox-jni</connection>
+        <developerConnection>scm:git:git://github.com/wireapp/cryptobox-jni</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/wireapp/cryptobox-jni</url>
+	</scm>
+
     <licenses>
         <license>
             <name>GPL-3.0</name>
@@ -18,4 +26,27 @@
     <organization>
         <name>com.wire</name>
     </organization>
+
+    <developers>
+        <developer>
+            <id>makingthematrix</id>
+            <name>Maciej Gorywoda</name>
+            <email>maciej.gorywoda@wire.com</email>
+            <organization>Project Zeta GmbH</organization>
+            <organizationUrl>https://wire.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>vitorhugods</id>
+            <name>Vitor Hugo Schwaab</name>
+            <email>vitor.schwaab@wire.com</email>
+            <organization>Project Zeta GmbH</organization>
+            <organizationUrl>https://wire.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 </project>
