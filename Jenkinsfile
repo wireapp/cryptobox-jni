@@ -1,5 +1,7 @@
 pipeline {
-    agent none
+    agent {
+        label 'android-reloaded-builder'
+    }
 
     options {
         parallelsAlwaysFailFast()
