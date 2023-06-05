@@ -23,9 +23,9 @@ nexusPublishing {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact "output/dist/cryptobox-android-1.1.3.aar"
-            artifact source: "output/dist/cryptobox-android-1.1.3-javadoc.jar", classifier: 'javadoc'
-            artifact source: "output/dist/cryptobox-android-1.1.3-sources.jar", classifier: 'sources'
+            artifact "output/dist/cryptobox-android.aar"
+            artifact source: "output/dist/cryptobox-android-javadoc.jar", classifier: 'javadoc'
+            artifact source: "output/dist/cryptobox-android-sources.jar", classifier: 'sources'
 
             pom {
                 name.set("cryptobox-android")
