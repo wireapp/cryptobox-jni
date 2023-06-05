@@ -16,6 +16,7 @@ pipeline {
             steps {
                 checkout scm
                 sh "make dist"
+                archiveArtifacts artifacts: 'android/dist/*', followSymlinks: false
             }
         }
         stage('Upload to sonatype') {
