@@ -92,5 +92,4 @@ USER rust
 WORKDIR /home/rust
 COPY --chown=rust . cryptobox-jni
 WORKDIR cryptobox-jni/android
-RUN make dist || echo "FAILED TO BUILD!!"
 
