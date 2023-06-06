@@ -24,6 +24,7 @@ pipeline {
                 writeFile file: 'mk/version.mk', text: "VERSION := $version"
                 sh "rm -rf android/dist"
                 sh "cd android && make dist"
+                stash includes: 'android/dist/*', name: 'artifacts'
                 archiveArtifacts artifacts: 'android/dist/*', followSymlinks: false
             }
         }
@@ -37,6 +38,7 @@ pipeline {
                     file(credentialsId: 'D599C1AA126762B1.asc', variable: 'PGP_PRIVATE_KEY_FILE'),
                     string(credentialsId: 'PGP_PASSPHRASE', variable: 'PGP_PASSPHRASE') ]) {
                     withMaven(maven: 'M3') {
+                        unstash 'artifacts'
                         sh(
                             script: """
                                 touch local.properties
