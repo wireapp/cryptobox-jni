@@ -39,6 +39,7 @@ pipeline {
                     withMaven(maven: 'M3') {
                         sh(
                             script: """
+                                touch local.properties
                                 version=$version ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
                             """
                         )
