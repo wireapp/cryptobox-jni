@@ -9,7 +9,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'version', defaultValue: '1.1.3')
+        string(name: 'version', defaultValue: '1.1.4')
         booleanParam(name: 'deploy', defaultValue: false)
     }
 
