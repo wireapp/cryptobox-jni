@@ -13,10 +13,8 @@ IMAGE_NAME="wire/cryptobox-jni"
 
 # build
 docker build -t ${IMAGE_NAME} .
-docker create -ti --name temp_build ${IMAGE_NAME} bash
-
-# archive
-rm -fr output || true
+rm -rf output || true
 mkdir -p output
-docker cp temp_build:/home/rust/cryptobox-jni/android/dist output/
+chmod o+rw output
+docker run -v ./output:/home/rust/cryptobox-jni/android/dist ${IMAGE_NAME} make dist
 echo "DONE: output is in `pwd`/output"

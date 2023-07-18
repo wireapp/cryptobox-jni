@@ -62,28 +62,28 @@ dist/cryptobox-android-$(VERSION).tar.gz: dist-libs dist-jar doc
 .PHONY: dist-tar
 dist-tar: dist/cryptobox-android-$(VERSION).tar.gz
 
-dist/cryptobox-android-$(VERSION).aar: dist-libs dist-jar
+dist/cryptobox-android.aar: dist-libs dist-jar
 	mkdir -p dist/aar/jni
 	cp dist/cryptobox-jni-$(VERSION).jar dist/aar/classes.jar
 	cp AndroidManifest.xml dist/aar/
 	cp -r dist/lib/* dist/aar/jni/
-	cd dist/aar && zip -r ../cryptobox-android-$(VERSION).aar *
+	cd dist/aar && zip -r ../cryptobox-android.aar *
 	rm -rf dist/aar
 
-dist/cryptobox-android-$(VERSION)-sources.jar:
-	jar -cvf dist/cryptobox-android-$(VERSION)-sources.jar -C ../src/java .
+dist/cryptobox-android-sources.jar:
+	jar -cvf dist/cryptobox-android-sources.jar -C ../src/java .
 
-dist/cryptobox-android-$(VERSION)-javadoc.jar: doc
-	jar -cvf dist/cryptobox-android-$(VERSION)-javadoc.jar -C dist/javadoc .
+dist/cryptobox-android-javadoc.jar: doc
+	jar -cvf dist/cryptobox-android-javadoc.jar -C dist/javadoc .
 
 .PHONY: dist-aar
-dist-aar: dist/cryptobox-android-$(VERSION).aar
+dist-aar: dist/cryptobox-android.aar
 
 .PHONY: dist-sources
-dist-sources: dist/cryptobox-android-$(VERSION)-sources.jar
+dist-sources: dist/cryptobox-android-sources.jar
 
 .PHONY: dist-javadoc
-dist-javadoc: dist/cryptobox-android-$(VERSION)-javadoc.jar
+dist-javadoc: dist/cryptobox-android-javadoc.jar
 
 .PHONY: dist
 dist: compile dist-tar dist-aar dist-sources dist-javadoc

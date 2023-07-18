@@ -1,0 +1,65 @@
+plugins {
+    id "java-library"
+    id "maven-publish"
+    id "signing"
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+}
+
+group = "com.wire"
+version = System.getenv("version")
+
+def Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = properties.getProperty("sonatype.username") ?: System.getenv("SONATYPE_USERNAME")
+            password = properties.getProperty("sonatype.password") ?: System.getenv("SONATYPE_PASSWORD")
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact "android/dist/cryptobox-android.aar"
+            artifact source: "android/dist/cryptobox-android-javadoc.jar", classifier: 'javadoc'
+            artifact source: "android/dist/cryptobox-android-sources.jar", classifier: 'sources'
+
+            pom {
+                name.set("cryptobox-android")
+                description.set("Wire - Cryptobox JNI bindings for Android")
+                url.set("https://github.com/wireapp/cryptobox-jni")
+                licenses {
+                    license {
+                        name.set("GPL-3.0")
+                        url.set("https://opensource.org/licenses/GPL-3.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("svenwire")
+                        name.set("Sven Jost")
+                        email.set("sven@wire.com")
+                        organization.set("Wire Swiss GmbH")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/wireapp/cryptobox-jni")
+                    developerConnection.set("scm:git:git://github.com/wireapp/cryptobox-jni")
+                    url.set("https://github.com/wireapp/cryptobox-jni")
+                }
+            }
+        }
+    }
+}
+
+signing {
+    def signingKeyFile = properties.getProperty("signingKeyFile") ?: System.getenv("PGP_PRIVATE_KEY_FILE")
+    def signingKey = new File(signingKeyFile).text
+    def signingPassword = properties.getProperty("signingPassword") ?: System.getenv("PGP_PASSPHRASE")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+}
+

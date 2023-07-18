@@ -7,7 +7,6 @@ bin/
 gen/
 libs/
 obj/
-build/
 dist/
 output/
 local.properties
@@ -20,3 +19,9 @@ android/*.pom
 android/*.gz
 android/*.iml
 android/*.properties
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
