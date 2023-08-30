@@ -19,5 +19,5 @@ LOCAL_MODULE           := cryptobox-jni
 LOCAL_SRC_FILES        := ../../src/cryptobox-jni.c
 LOCAL_SHARED_LIBRARIES := libsodium-prebuilt libcryptobox-prebuilt
 LOCAL_LDLIBS           := -llog
-LOCAL_CFLAGS           += -std=c99 -Wall
+LOCAL_CFLAGS           += -std=c99 -Wall -fstack-protector-strong
 include $(BUILD_SHARED_LIBRARY)
