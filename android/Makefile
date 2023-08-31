@@ -105,7 +105,9 @@ jni/armeabi-v7a/libcryptobox.so: libsodium-armeabi-v7a | build/src/$(CRYPTOBOX_N
 		-L ../../libsodium-android-arm-v7a/lib \
 		-C ar=arm-linux-androideabi-ar \
 		-C linker=armv7a-linux-androideabi16-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
+		-C link_args="-Wl,-soname,libcryptobox.so" \
+		-C link_arg=-fstack-protector-strong \
+		-C target_feature=+crt-static
 	mkdir -p jni/armeabi-v7a
 	cp build/src/$(CRYPTOBOX_NAME)/target/armv7-linux-androideabi/release/libcryptobox.so jni/armeabi-v7a/libcryptobox.so
 
@@ -118,7 +120,9 @@ jni/x86/libcryptobox.so: libsodium-x86 | build/src/$(CRYPTOBOX_NAME)
 		-L ../../libsodium-android-x86/lib \
 		-C ar=i686-linux-android-ar \
 		-C linker=i686-linux-android16-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
+		-C link_args="-Wl,-soname,libcryptobox.so" \
+		-C link_arg=-fstack-protector-strong \
+		-C target_feature=+crt-static
 	mkdir -p jni/x86
 	cp build/src/$(CRYPTOBOX_NAME)/target/i686-linux-android/release/libcryptobox.so jni/x86/libcryptobox.so
 
@@ -131,7 +135,9 @@ jni/x86_64/libcryptobox.so: libsodium-x86_64 | build/src/$(CRYPTOBOX_NAME)
 		-L ../../libsodium-android-x86_64/lib \
 		-C ar=x86_64-linux-android-ar \
 		-C linker=x86_64-linux-android21-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
+		-C link_args="-Wl,-soname,libcryptobox.so" \
+		-C link_arg=-fstack-protector-strong \
+		-C target_feature=+crt-static
 	mkdir -p jni/x86_64
 	cp build/src/$(CRYPTOBOX_NAME)/target/x86_64-linux-android/release/libcryptobox.so jni/x86_64/libcryptobox.so
 
@@ -144,7 +150,9 @@ jni/arm64-v8a/libcryptobox.so: libsodium-aarch64 | build/src/$(CRYPTOBOX_NAME)
 		-L ../../libsodium-android-armv8-a/lib \
 		-C ar=aarch64-linux-android-ar \
 		-C linker=aarch64-linux-android21-clang \
-		-C link_args="-Wl,-soname,libcryptobox.so"
+		-C link_args="-Wl,-soname,libcryptobox.so" \
+		-C link_arg=-fstack-protector-strong \
+		-C target_feature=+crt-static
 	mkdir -p jni/arm64-v8a
 	cp build/src/$(CRYPTOBOX_NAME)/target/aarch64-linux-android/release/libcryptobox.so jni/arm64-v8a/libcryptobox.so
 
